@@ -26,168 +26,11 @@ let leaves = [
 ];
 
 const translations = {
-    ar: {
-        title: 'نظام إدارة الموارد البشرية المتكامل',
-        dashboard: 'لوحة الأرصدة والتحكم',
-        leaves: 'طلبات الإجازات',
-        manage_depts: 'إضافة وإدارة الأقسام',
-        add_employee: 'إضافة موظف جديد',
-        reports: 'طباعة التقارير وحاسبة الرواتب',
-        welcome: 'المستخدم الحالي',
-        logout: 'خروج',
-        total_bal: 'الرصيد الكلي المتراكم',
-        used_bal: 'الأيام المستهلكة',
-        avail_bal: 'الرصيد المتاح حالياً',
-        admin_settings: 'إعدادات لوحة التحكم لمدير النظام (الأدمن)',
-        admin_name_ar: 'اسم الحساب (بالعربي):',
-        admin_name_en: 'اسم الحساب (بالإنجليزي):',
-        username: 'اليوزر (اسم المستخدم):',
-        password: 'كلمة المرور (الباسورد):',
-        save: '✓ حفظ وإعتماد البيانات',
-        emp_management: 'الإدارة المباشرة للموظفين وتعيين الصلاحيات بالفصل الجديد',
-        th_name: 'اسم الموظف',
-        th_dept: 'القسم',
-        th_role: 'نوع الصلاحية',
-        th_user: 'اسم المستخدم',
-        th_pass: 'كلمة المرور',
-        th_bal: 'الرصيد المتاح',
-        th_actions: 'الإجراءات',
-        th_type: 'نوع الإجازة',
-        th_duration: 'المدة',
-        th_reason: 'السبب',
-        th_status: 'الحالة',
-        th_reject_reason: 'سبب الرفض',
-        th_date: 'تاريخ الإجازة',
-        delete: 'حذف',
-        placeholder_name_ar: 'الاسم بالعربية',
-        placeholder_name_en: 'الاسم بالإنجليزية',
-        role_employee: 'موظف عادي',
-        role_manager: 'المدير المباشر (رئيس القسم)',
-        role_hr: 'موظف في قسم (HR)',
-        role_hr_manager: 'مدير الموارد البشرية (صاحب الاعتماد النهائي)',
-        add_btn: '+ اعتماد الموظف الجديد فوراً',
-        dept_title: 'إدارة الأقسام والجهات داخل المنظومة',
-        add_dept_title: '+ إضافة قسم / منشأة جديدة',
-        dept_name_ar: 'اسم القسم بالعربي:',
-        dept_name_en: 'اسم القسم بالإنجليزي:',
-        add_dept_btn: 'إضافة القسم فوراً',
-        reason_label: 'السبب بالتفصيل:',
-        days_label: 'عدد الأيام المطلوبة:',
-        leave_type_label: 'اختر نوع الإجازة بدقة:',
-        send_leave: 'إرسال الطلب لبدء مسار التمرير',
-        reject_prompt: 'فضلاً اكتب سبب رفض هذا الطلب بالتفصيل للشفافية:',
-        reject_btn: '✕ رفض',
-        approve_step_1: '✓ تمرير للـ HR',
-        approve_step_2: '✓ تمرير لمدير الموارد البشرية',
-        approve_step_3: '✓ اعتماد نهائي وخصم للأرصدة',
-        no_actions: 'لا توجد إجراءات معلقة لك',
-        report_head: 'كشف تفصيلي بالإجازات المعتمدة والمستهلكة وحساب البدلات والرواتب',
-        select_emp_placeholder: '-- اختر اسم الموظف لإصدار التقرير والرواتب --',
-        generate_report_btn: 'إصدار التقرير',
-        report_title_print: 'تقرير رصيد الإجازات ومستحقات الرواتب لعام 2026',
-        th_days_deducted: 'الأيام المخصومة',
-        calc_box_title: 'تعديل الرواتب والبدلات الشهرية (الأساسية):',
-        calc_detail_title: 'تفصيل مستحقات الإجازة لـ',
-        lbl_calc_base: '• مستحق الراتب الأساسي:',
-        lbl_calc_housing: '• مستحق بدل السكن:',
-        lbl_calc_trans: '• مستحق بدل المواصلات:',
-        lbl_calc_food: '• مستحق بدل الطعام:',
-        lbl_calc_total: 'إجمالي راتب الإجازة:',
-        print_btn_text: 'ابدأ طباعة التقرير فوراً',
-        no_leaves_msg: 'لا توجد إجازات معتمدة ومخصومة مسجلة لهذا الموظف',
-        salary_less_15_msg: 'أيام فردية أقل من 15 يوماً (لا يحسب لها راتب مقدم)',
-        ph_base: 'الراتب الأساسي',
-        ph_housing: 'بدل السكن',
-        ph_trans: 'بدل مواصلات',
-        ph_food: 'بدل طعام',
-        history_title: 'سجل تواريخ الإجازات المعتمدة وتفاصيل الرواتب'
-    },
-    en: {
-        title: 'Integrated HR Management System',
-        dashboard: 'Balances & Dashboard',
-        leaves: 'Leave Requests',
-        manage_depts: 'Manage Departments',
-        add_employee: 'Add New Employee',
-        reports: 'Print Reports & Salary Calc',
-        welcome: 'Current User',
-        logout: 'Logout',
-        total_bal: 'Total Accumulated Balance',
-        used_bal: 'Used Days',
-        avail_bal: 'Current Available Balance',
-        admin_settings: 'System Administrator Account Settings',
-        admin_name_ar: 'Account Name (Arabic):',
-        admin_name_en: 'Account Name (English):',
-        username: 'Username (Login):',
-        password: 'Password:',
-        save: '✓ Save and Approve Data',
-        emp_management: 'Employee Management & Role Assignment',
-        th_name: 'Employee Name',
-        th_dept: 'Department',
-        th_role: 'Role Type',
-        th_user: 'Username',
-        th_pass: 'Password',
-        th_bal: 'Available Balance',
-        th_actions: 'Actions',
-        th_type: 'Leave Type',
-        th_duration: 'Duration',
-        th_reason: 'Reason',
-        th_status: 'Status',
-        th_reject_reason: 'Rejection Reason',
-        th_date: 'Leave Date',
-        delete: 'Delete',
-        placeholder_name_ar: 'Name in Arabic',
-        placeholder_name_en: 'Name in English',
-        role_employee: 'Regular Employee',
-        role_manager: 'Direct Manager (Head of Dept)',
-        role_hr: 'HR Department Staff',
-        role_hr_manager: 'HR Manager (Final Approver)',
-        add_btn: '+ Approve New Employee Immediately',
-        dept_title: 'Manage Departments & Entities',
-        add_dept_title: '+ Add New Department',
-        dept_name_ar: 'Dept Name (Arabic):',
-        dept_name_en: 'Dept Name (English):',
-        add_dept_btn: 'Add Department Now',
-        reason_label: 'Reason in detail:',
-        days_label: 'Number of Days Requested:',
-        leave_type_label: 'Select Leave Type Accurately:',
-        send_leave: 'Send Request to Start Workflow',
-        reject_prompt: 'Please enter the reason for rejecting this request:',
-        reject_btn: '✕ Reject',
-        approve_step_1: '✓ Forward to HR',
-        approve_step_2: '✓ Forward to HR Manager',
-        approve_step_3: '✓ Final Approve & Deduct',
-        no_actions: 'No pending actions for you',
-        report_head: 'Detailed statement of approved & used leaves during the current year',
-        select_emp_placeholder: '-- Select Employee to Generate Report & Salary --',
-        generate_report_btn: 'Generate Report',
-        report_title_print: 'Leave Balance & Salary Allowance Report 2026',
-        th_days_deducted: 'Deducted Days',
-        calc_box_title: 'Modify Monthly Base Salary & Allowances:',
-        calc_detail_title: 'Leave Allowance Breakdowns for',
-        lbl_calc_base: '• Base Salary Allowance:',
-        lbl_calc_housing: '• Housing Allowance:',
-        lbl_calc_trans: '• Transport Allowance:',
-        lbl_calc_food: '• Food Allowance:',
-        lbl_calc_total: 'Total Leave Salary:',
-        print_btn_text: 'Start Printing Report Now',
-        no_leaves_msg: 'No approved and deducted leaves recorded for this employee',
-        salary_less_15_msg: 'Individual days less than 15 days (No advance salary calculated)',
-        ph_base: 'Base Salary',
-        ph_housing: 'Housing Allowance',
-        ph_trans: 'Transport Allowance',
-        ph_food: 'Food Allowance',
-        history_title: 'Approved Leaves History & Salary Breakdown'
-    }
+    ar: { title: 'نظام إدارة الموارد البشرية المتكامل', dashboard: 'لوحة الأرصدة والتحكم', leaves: 'طلبات الإجازات', manage_depts: 'إضافة وإدارة الأقسام', add_employee: 'إضافة موظف جديد', reports: 'طباعة التقارير وحاسبة الرواتب', welcome: 'المستخدم الحالي', logout: 'خروج', total_bal: 'الرصيد الكلي المتراكم', used_bal: 'الأيام المستهلكة', avail_bal: 'الرصيد المتاح حالياً', admin_settings: 'إعدادات لوحة التحكم لمدير النظام (الأدمن)', admin_name_ar: 'اسم الحساب (بالعربي):', admin_name_en: 'اسم الحساب (بالإنجليزي):', username: 'اليوزر (اسم المستخدم):', password: 'كلمة المرور (الباسورد):', save: '✓ حفظ وإعتماد البيانات', emp_management: 'الإدارة المباشرة للموظفين وتعيين الصلاحيات بالفصل الجديد', th_name: 'اسم الموظف', th_dept: 'القسم', th_role: 'نوع الصلاحية', th_user: 'اسم المستخدم', th_pass: 'كلمة المرور', th_bal: 'الرصيد المتاح', th_actions: 'الإجراءات', th_type: 'نوع الإجازة', th_duration: 'المدة', th_reason: 'السبب', th_status: 'الحالة', th_reject_reason: 'سبب الرفض', th_date: 'تاريخ الإجازة', delete: 'حذف', placeholder_name_ar: 'الاسم بالعربية', placeholder_name_en: 'الاسم بالإنجليزية', role_employee: 'موظف عادي', role_manager: 'المدير المباشر (رئيس القسم)', role_hr: 'موظف في قسم (HR)', role_hr_manager: 'مدير الموارد البشرية (صاحب الاعتماد النهائي)', add_btn: '+ اعتماد الموظف الجديد فوراً', dept_title: 'إدارة الأقسام والجهات داخل المنظومة', add_dept_title: '+ إضافة قسم / منشأة جديدة', dept_name_ar: 'اسم القسم بالعربي:', dept_name_en: 'اسم القسم بالإنجليزي:', add_dept_btn: 'إضافة القسم فوراً', reason_label: 'السبب بالتفصيل:', days_label: 'عدد الأيام المطلوبة:', leave_type_label: 'اختر نوع الإجازة بدقة:', send_leave: 'إرسال الطلب لبدء مسار التمرير', reject_prompt: 'فضلاً اكتب سبب رفض هذا الطلب بالتفصيل للشفافية:', reject_btn: '✕ رفض', approve_step_1: '✓ تمرير للـ HR', approve_step_2: '✓ تمرير لمدير الموارد البشرية', approve_step_3: '✓ اعتماد نهائي وخصم للأرصدة', no_actions: 'لا توجد إجراءات معلقة لك', report_head: 'كشف تفصيلي بالإجازات المعتمدة والمستهلكة وحساب البدلات والرواتب', select_emp_placeholder: '-- اختر اسم الموظف لإصدار التقرير والرواتب --', generate_report_btn: 'إصدار التقرير', report_title_print: 'تقرير رصيد الإجازات ومستحقات الرواتب لعام 2026', th_days_deducted: 'الأيام المخصومة', calc_box_title: 'تعديل الرواتب والبدلات الشهرية (الأساسية):', calc_detail_title: 'تفصيل مستحقات الإجازة لـ', lbl_calc_base: '• مستحق الراتب الأساسي:', lbl_calc_housing: '• مستحق بدل السكن:', lbl_calc_trans: '• مستحق بدل المواصلات:', lbl_calc_food: '• مستحق بدل الطعام:', lbl_calc_total: 'إجمالي راتب الإجازة:', print_btn_text: 'ابدأ طباعة التقرير فوراً', no_leaves_msg: 'لا توجد إجازات معتمدة ومخصومة مسجلة لهذا الموظف', salary_less_15_msg: 'أيام فردية أقل من 15 يوماً (لا يحسب لها راتب مقدم)', ph_base: 'الراتب الأساسي', ph_housing: 'بدل السكن', ph_trans: 'بدل مواصلات', ph_food: 'بدل طعام', history_title: 'سجل تواريخ الإجازات المعتمدة وتفاصيل الرواتب' },
+    en: { title: 'Integrated HR Management System', dashboard: 'Balances & Dashboard', leaves: 'Leave Requests', manage_depts: 'Manage Departments', add_employee: 'Add New Employee', reports: 'Print Reports & Salary Calc', welcome: 'Current User', logout: 'Logout', total_bal: 'Total Accumulated Balance', used_bal: 'Used Days', avail_bal: 'Current Available Balance', admin_settings: 'System Administrator Account Settings', admin_name_ar: 'Account Name (Arabic):', admin_name_en: 'Account Name (English):', username: 'Username (Login):', password: 'Password:', save: '✓ Save and Approve Data', emp_management: 'Employee Management & Role Assignment', th_name: 'Employee Name', th_dept: 'Department', th_role: 'Role Type', th_user: 'Username', th_pass: 'Password', th_bal: 'Available Balance', th_actions: 'Actions', th_type: 'Leave Type', th_duration: 'Duration', th_reason: 'Reason', th_status: 'Status', th_reject_reason: 'Rejection Reason', th_date: 'Leave Date', delete: 'Delete', placeholder_name_ar: 'Name in Arabic', placeholder_name_en: 'Name in English', role_employee: 'Regular Employee', role_manager: 'Direct Manager (Head of Dept)', role_hr: 'HR Department Staff', role_hr_manager: 'HR Manager (Final Approver)', add_btn: '+ Approve New Employee Immediately', dept_title: 'Manage Departments & Entities', add_dept_title: '+ Add New Department', dept_name_ar: 'Dept Name (Arabic):', dept_name_en: 'Dept Name (English):', add_dept_btn: 'Add Department Now', reason_label: 'Reason in detail:', days_label: 'Number of Days Requested:', leave_type_label: 'Select Leave Type Accurately:', send_leave: 'Send Request to Start Workflow', reject_prompt: 'Please enter the reason for rejecting this request:', reject_btn: '✕ Reject', approve_step_1: '✓ Forward to HR', approve_step_2: '✓ Forward to HR Manager', approve_step_3: '✓ Final Approve & Deduct', no_actions: 'No pending actions for you', report_head: 'Detailed statement of approved & used leaves during the current year', select_emp_placeholder: '-- Select Employee to Generate Report & Salary --', generate_report_btn: 'Generate Report', report_title_print: 'Leave Balance & Salary Allowance Report 2026', th_days_deducted: 'Deducted Days', calc_box_title: 'Modify Monthly Base Salary & Allowances:', calc_detail_title: 'Leave Allowance Breakdowns for', lbl_calc_base: '• Base Salary Allowance:', lbl_calc_housing: '• Housing Allowance:', lbl_calc_trans: '• Transport Allowance:', lbl_calc_food: '• Food Allowance:', lbl_calc_total: 'Total Leave Salary:', print_btn_text: 'Start Printing Report Now', no_leaves_msg: 'No approved and deducted leaves recorded for this employee', salary_less_15_msg: 'Individual days less than 15 days (No advance salary calculated)', ph_base: 'Base Salary', ph_housing: 'Housing Allowance', ph_trans: 'Transport Allowance', ph_food: 'Food Allowance', history_title: 'Approved Leaves History & Salary Breakdown' }
 };
 
-const leaveTypesMap = {
-    'إجازة سنوية': { ar: 'إجازة سنوية (تخصم من الرصيد)', en: 'Annual Leave (Deducted)' },
-    'إجازة اضطرارية': { ar: 'إجازة اضطرارية', en: 'Emergency Leave' },
-    'إجازة مرضية': { ar: 'إجازة مرضية', en: 'Sick Leave' },
-    'إجازة حج': { ar: 'إجازة حج', en: 'Hajj Leave' },
-    'إجازة أمومة': { ar: 'إجازة أمومة', en: 'Maternity Leave' },
-    'إجازة أبوة': { ar: 'إجازة أبوة', en: 'Paternity Leave' }
-};
+const leaveTypesMap = { 'إجازة سنوية': { ar: 'إجازة سنوية (تخصم من الرصيد)', en: 'Annual Leave (Deducted)' }, 'إجازة اضطرارية': { ar: 'إجازة اضطرارية', en: 'Emergency Leave' }, 'إجازة مرضية': { ar: 'إجازة مرضية', en: 'Sick Leave' }, 'إجازة حج': { ar: 'إجازة حج', en: 'Hajj Leave' }, 'إجازة أمومة': { ar: 'إجازة أمومة', en: 'Maternity Leave' }, 'إجازة أبوة': { ar: 'إجازة أبوة', en: 'Paternity Leave' } };
 
 function calculateUserBalances(user) {
     if (user.role === 'admin') return { initial: '0.0', used: 0, balance: '0.0' };
@@ -204,7 +47,6 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
     let pendingCount = leaves.filter(l => l.finalStatusAr.includes('قيد الانتظار')).length;
     let t = translations[lang];
     let isRtl = lang === 'ar';
-    
     return `
     <!DOCTYPE html>
     <html lang="${lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
@@ -221,7 +63,13 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
             .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #1abc9c; color: white; }
             .main-content { margin-${isRtl ? 'right' : 'left'}: 280px; padding: 25px; width: calc(100% - 280px); }
             .card-custom { border-radius: 8px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-bottom: 20px; }
-            @media (max-width: 768px) { .sidebar { width: 100%; min-height: auto; position: relative; } .main-content { margin: 0; width: 100%; } .d-flex { flex-direction: column; } }
+            /* تعديل الجوال */
+            @media (max-width: 768px) {
+                .sidebar { width: 100%; min-height: auto; position: relative; z-index: 1000; }
+                .main-content { margin: 0; width: 100%; padding: 10px; }
+                .d-flex { flex-direction: column !important; }
+                .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            }
             @media print { .sidebar, .btn, .no-print, form, .alert, .card-custom-header, select, input, .input-group { display: none !important; } .main-content { margin: 0 !important; width: 100% !important; padding: 0; } .print-section { display: block !important; border: none !important; } }
         </style>
     </head>
@@ -241,7 +89,6 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
                     ` : ''}
                 </ul>
             </div>
-
             <div class="main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4 p-3 card-custom bg-white card-custom-header no-print">
                     <h5 class="m-0 fw-bold text-dark"><i class="bi bi-cpu-fill text-primary"></i> ${t.title}</h5>
@@ -294,9 +141,9 @@ app.post('/login', (req, res) => {
     if (u) { req.session.user = u; req.session.lang = 'ar'; res.redirect('/'); } 
     else { res.send('<div style="text-align:center; margin-top:50px;"><h2>Invalid Data / بيانات خاطئة</h2><a href="/login">Back / عودة</a></div>'); }
 });
+
 app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/login'); });
 
-// المسار الإصلاحي لمنع ظهور شاشة بيضاء عند العودة غير المعرفة
 app.get('/back', (req, res) => { res.redirect('/'); });
 
 app.get('/', (req, res) => {
@@ -478,7 +325,6 @@ app.get('/leaves', (req, res) => {
                 <tbody>
                     ${visibleLeaves.map(l => {
                         let actionsHtml = `<span class="text-muted small">${t.no_actions}</span>`;
-                        
                         if (user.role === 'dept_manager' && l.finalStatusAr === 'قيد الانتظار - موافقة المدير المباشر' && l.departmentAr === user.departmentAr && !l.isManagerOwnRequest) {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-success fw-bold p-1">${t.approve_step_1}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
@@ -488,7 +334,6 @@ app.get('/leaves', (req, res) => {
                         if (user.role === 'hr_manager' && l.finalStatusAr === 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية') {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-success fw-bold p-1">${t.approve_step_3}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
-
                         return `
                         <tr>
                             <td><b>${lang==='ar'? l.nameAr : l.nameEn}</b></td>
@@ -504,14 +349,12 @@ app.get('/leaves', (req, res) => {
                 </tbody>
             </table>
         </div>
-
         <script>
             function triggerReject(id) {
                 let reason = prompt("${t.reject_prompt}");
                 if (reason) window.location.href = "/action/reject-step/" + id + "?reason=" + encodeURIComponent(reason);
             }
         </script>
-
         ${user.role !== 'admin' ? `
         <div class="mt-4 border-top pt-3 no-print" style="max-width: 500px;">
             <h6 class="fw-bold text-primary mb-3"><i class="bi bi-plus-circle"></i> تقديم طلب إجازة جديد لحسابك:</h6>
@@ -531,242 +374,4 @@ app.get('/leaves', (req, res) => {
     res.send(generateLayout(user, 'leaves', html, lang));
 });
 
-app.post('/request-leave', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    const user = users.find(u => u.id === req.session.user.id) || req.session.user;
-    const typeKey = req.body.typeKey;
-    
-    let initialStatusAr = 'قيد الانتظار - موافقة المدير المباشر';
-    let initialStatusEn = 'Pending - Direct Manager Approval';
-    let isManagerOwn = false;
-
-    if (user.role === 'dept_manager' || user.role === 'hr_manager') {
-        initialStatusAr = 'قيد الانتظار - مراجعة موظف HR';
-        initialStatusEn = 'Pending - HR Review';
-        isManagerOwn = true;
-    }
-
-    leaves.push({
-        id: leaves.length + 1,
-        employeeId: user.id,
-        nameAr: user.nameAr,
-        nameEn: user.nameEn,
-        departmentAr: user.departmentAr,
-        departmentEn: user.departmentEn,
-        typeAr: typeKey,
-        typeEn: leaveTypesMap[typeKey].en,
-        days: parseInt(req.body.days),
-        reasonAr: req.body.reason,
-        reasonEn: req.body.reason,
-        finalStatusAr: initialStatusAr,
-        finalStatusEn: initialStatusEn,
-        isManagerOwnRequest: isManagerOwn,
-        rejectReasonAr: '',
-        rejectReasonEn: '',
-        date: new Date().toISOString().split('T')[0]
-    });
-    res.redirect('/leaves');
-});
-
-app.get('/action/approve-step/:id', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    const leave = leaves.find(l => l.id == req.params.id);
-    if (leave) {
-        if (leave.finalStatusAr === 'قيد الانتظار - موافقة المدير المباشر') {
-            leave.finalStatusAr = 'قيد الانتظار - مراجعة موظف HR';
-            leave.finalStatusEn = 'Pending - HR Review';
-        } else if (leave.finalStatusAr === 'قيد الانتظار - مراجعة موظف HR') {
-            leave.finalStatusAr = 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية';
-            leave.finalStatusEn = 'Pending - HR Manager Final Approval';
-        } else if (leave.finalStatusAr === 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية') {
-            leave.finalStatusAr = 'تمت الموافقة النهائية والاعتماد';
-            leave.finalStatusEn = 'Approved & Documented';
-            const u = users.find(usr => usr.id === leave.employeeId);
-            if (u && leave.typeAr === 'إجازة سنوية') u.usedBalance += leave.days;
-        }
-    }
-    res.redirect('/leaves');
-});
-
-app.get('/action/reject-step/:id', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    const leave = leaves.find(l => l.id == req.params.id);
-    const reason = req.query.reason || 'Rejected';
-    if (leave) {
-        leave.finalStatusAr = 'مرفوض كلياً';
-        leave.finalStatusEn = 'Rejected Completely';
-        leave.rejectReasonAr = reason;
-        leave.rejectReasonEn = reason;
-    }
-    res.redirect('/leaves');
-});
-
-app.get('/reports', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const lang = req.session.lang || 'ar';
-    const t = translations[lang];
-    const selectedUserId = req.query.userId;
-    let reportHtml = '';
-
-    if (selectedUserId) {
-        const selectedUser = users.find(u => u.id === selectedUserId);
-        if (selectedUser) {
-            const b = calculateUserBalances(selectedUser);
-            const approvedLeaves = leaves.filter(l => l.employeeId === selectedUser.id && l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد');
-            
-            reportHtml = `
-            <div class="mt-4 p-4 border border-dark rounded bg-white print-section">
-                <div class="text-center mb-4">
-                    <h3 class="fw-bold">${t.report_title_print}</h3>
-                    <p class="text-muted small">${t.report_head}</p>
-                </div>
-                
-                <div class="row g-3 mb-4 p-3 bg-light rounded border text-start">
-                    <div class="col-md-6"><b>${t.th_name}:</b> ${lang==='ar'? selectedUser.nameAr : selectedUser.nameEn}</div>
-                    <div class="col-md-6"><b>${t.th_dept}:</b> ${lang==='ar'? selectedUser.departmentAr : selectedUser.departmentEn}</div>
-                    <div class="col-4 mt-3 text-primary"><b>${t.total_bal}:</b> <span class="fs-5 fw-bold">${b.initial}</span></div>
-                    <div class="col-4 mt-3 text-danger"><b>${t.used_bal}:</b> <span class="fs-5 fw-bold">${b.used}</span></div>
-                    <div class="col-4 mt-3 text-success"><b>${t.avail_bal}:</b> <span class="fs-5 fw-bold">${b.balance}</span></div>
-                </div>
-
-                <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-clock-history"></i> ${t.history_title}</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-striped table-bordered text-center align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>${t.th_date}</th>
-                                <th>${t.th_type}</th>
-                                <th>${t.th_days_deducted}</th>
-                                <th>${t.th_reason}</th>
-                                <th style="width: 45%;">${lang==='ar' ? 'حسبة راتب الإجازة التفصيلية (15 يوم وفوق)' : 'Detailed Leave Salary Allowance Breakdown'}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${approvedLeaves.length === 0 ? `<tr><td colspan="5" class="text-muted p-3">${t.no_leaves_msg}</td></tr>` : 
-                            approvedLeaves.map(l => {
-                                const dateObj = new Date(l.date);
-                                const formattedDate = lang==='ar' ? dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) : dateObj.toLocaleDateString('en-US');
-                                
-                                let salaryCalculatorHtml = '';
-                                if (l.days >= 15) {
-                                    salaryCalculatorHtml = `
-                                    <div class="p-2 border rounded bg-white text-start no-print mb-2">
-                                        <small class="fw-bold text-success d-block mb-1">${t.card_box_title}</small>
-                                        <div class="row g-1">
-                                            <div class="col-6"><input type="number" id="base-${l.id}" placeholder="${t.ph_base}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
-                                            <div class="col-6"><input type="number" id="housing-${l.id}" placeholder="${t.ph_housing}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
-                                            <div class="col-6"><input type="number" id="trans-${l.id}" placeholder="${t.ph_trans}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
-                                            <div class="col-6"><input type="number" id="food-${l.id}" placeholder="${t.ph_food}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="p-2 border rounded bg-light text-start text-dark shadow-sm">
-                                        <div class="small border-bottom pb-1 mb-1 fw-bold text-secondary">${t.calc_detail_title} (${l.days} ${lang==='ar'?'يوم':'Days'}):</div>
-                                        <div class="d-flex justify-content-between small"><span>${t.lbl_calc_base}</span> <span><b id="lbl-base-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
-                                        <div class="d-flex justify-content-between small"><span>${t.lbl_calc_housing}</span> <span><b id="lbl-housing-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
-                                        <div class="d-flex justify-content-between small"><span>${t.lbl_calc_trans}</span> <span><b id="lbl-trans-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
-                                        <div class="d-flex justify-content-between small mb-1"><span>${t.lbl_calc_food}</span> <span><b id="lbl-food-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
-                                        <div class="d-flex justify-content-between border-top pt-1 fw-bold text-primary fs-6">
-                                            <span>${t.lbl_calc_total}</span>
-                                            <span><span id="val-${l.id}">0.00</span> ${lang==='ar'?'ريال':'SAR'}</span>
-                                        </div>
-                                    </div>`;
-                                } else {
-                                    salaryCalculatorHtml = `<span class="text-muted small"><i class="bi bi-exclamation-circle"></i> ${t.salary_less_15_msg}</span>`;
-                                }
-
-                                return `
-                                <tr>
-                                    <td><span class="badge bg-secondary p-2">${formattedDate}</span></td>
-                                    <td><b>${lang==='ar' ? l.typeAr : l.typeEn}</b></td>
-                                    <td><b class="text-danger">${l.days} ${lang==='ar'?'يوم':'Days'}</b></td>
-                                    <td>${lang==='ar' ? l.reasonAr : l.reasonEn}</td>
-                                    <td>${salaryCalculatorHtml}</td>
-                                </tr>`;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-
-                <script>
-                    function calculateDetailedLeaveSalary(id, days) {
-                        let base = parseFloat(document.getElementById('base-' + id).value) || 0;
-                        let housing = parseFloat(document.getElementById('housing-' + id).value) || 0;
-                        let trans = parseFloat(document.getElementById('trans-' + id).value) || 0;
-                        let food = parseFloat(document.getElementById('food-' + id).value) || 0;
-                        
-                        let leafBase = (base / 30) * days;
-                        let leafHousing = (housing / 30) * days;
-                        let leafTrans = (trans / 30) * days;
-                        let leafFood = (food / 30) * days;
-                        let totalLeaveSalary = leafBase + leafHousing + leafTrans + leafFood;
-                        
-                        document.getElementById('lbl-base-' + id).innerText = leafBase.toFixed(2);
-                        document.getElementById('lbl-housing-' + id).innerText = leafHousing.toFixed(2);
-                        document.getElementById('lbl-trans-' + id).innerText = leafTrans.toFixed(2);
-                        document.getElementById('lbl-food-' + id).innerText = leafFood.toFixed(2);
-                        document.getElementById('val-' + id).innerText = totalLeaveSalary.toFixed(2);
-                    }
-                </script>
-                <button onclick="window.print()" class="btn btn-warning fw-bold px-4 no-print"><i class="bi bi-printer"></i> ${t.print_btn_text}</button>
-            </div>`;
-        }
-    }
-
-    let html = `
-    <div class="card card-custom p-4 no-print">
-        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-printer-fill text-primary"></i> ${t.reports}</h5>
-        <form method="GET" action="/reports" class="row g-2 align-items-end">
-            <div class="col-md-8">
-                <select name="userId" class="form-select" required>
-                    <option value="">${t.select_emp_placeholder}</option>
-                    ${users.filter(u => u.role !== 'admin').map(u => `<option value="${u.id}" ${selectedUserId===u.id?'selected':''}>${lang==='ar'? u.nameAr : u.nameEn}</option>`).join('')}
-                </select>
-            </div>
-            <div class="col-md-4"><button type="submit" class="btn btn-primary w-100 fw-bold">${t.generate_report_btn}</button></div>
-        </form>
-    </div>
-    ${reportHtml}`;
-    res.send(generateLayout(req.session.user, 'reports', html, lang));
-});
-
-app.post('/update-admin-profile', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const adminUser = users.find(u => u.role === 'admin');
-    if (adminUser) {
-        adminUser.nameAr = req.body.adminNameAr;
-        adminUser.nameEn = req.body.adminNameEn;
-        adminUser.email = req.body.adminEmail;
-        adminUser.password = req.body.adminPassword;
-        req.session.user = adminUser;
-    }
-    res.redirect('/');
-});
-
-app.post('/add-user', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const { newNameAr, newNameEn, newEmail, newPassword, userDeptIndex, userRole } = req.body;
-    const deptObj = departments[parseInt(userDeptIndex)];
-    users.push({
-        id: (users.length + 1).toString(),
-        nameAr: newNameAr,
-        nameEn: newNameEn,
-        email: newEmail,
-        password: newPassword,
-        role: userRole,
-        departmentAr: deptObj.ar,
-        departmentEn: deptObj.en,
-        baseInitialBalance: 30,
-        usedBalance: 0
-    });
-    res.redirect('/');
-});
-
-app.get('/delete-user/:id', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    users = users.filter(u => u.id !== req.params.id);
-    res.redirect('/');
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`🚀 السيرفر جاهز تماماً ويعمل على المنفذ ${PORT}`));
+app.listen(10000, () => console.log('السيرفر يعمل بكامل كودك مع دعم الجوال'));
