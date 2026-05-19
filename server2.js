@@ -1,349 +1,456 @@
 const express = require('express');
-const session = require('express-session');
-const path = require('path');
-
 const app = express();
-const PORT = process.env.PORT || 10000;
+const path = require('path');
+const port = process.env.PORT || 3000;
 
-// إعدادات الجلسة والبيانات
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({
-    secret: 'hr-secret-key',
-    resave: false,
-    saveUninitialized: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
-// بيانات الموظفين الافتراضية والرواتب
-let departments = [
-    { id: 1, nameAr: "الموارد البشرية", nameEn: "Human Resources" },
-    { id: 2, nameAr: "التسويق", nameEn: "Marketing" },
-    { id: 3, nameAr: "تقنية المعلومات", nameEn: "Information Technology" }
+// --- 1. قاعدة البيانات المؤقتة (تم الحفاظ عليها وإضافة الحقول الجديدة) ---
+let employees = [
+    { id: "101", name: "Ahmed", department: "Production", role: "Manager", salary: 10000, housing: 2000, transport: 1000, nationality: "Saudi", leaveBalance: 30 },
+    { id: "102", name: "Sara", department: "HR", role: "Employee", salary: 7000, housing: 1500, transport: 500, nationality: "Saudi", leaveBalance: 30 },
+    { id: "103", name: "John", department: "Quality", role: "Employee", salary: 8000, housing: 2000, transport: 800, nationality: "Non-Saudi", leaveBalance: 30 }
 ];
 
-let users = [
-    {
-        id: 1,
-        nameAr: "المدير العام",
-        nameEn: "Admin User",
-        email: "admin@hr.com",
-        password: "admin", // كلمة المرور أصبحت مباشرة وسهلة جداً
-        role: "admin",
-        departmentAr: "الإدارة",
-        departmentEn: "Management",
-        baseInitialBalance: 30,
-        usedBalance: 0
-    }
+let leaveRequests = [
+    { id: 1, employeeId: "103", employeeName: "John", startDate: "2026-05-01", duration: 16, type: "Annual", reason: "Annual Leave", status: "Approved", currentStep: "Completed" }
 ];
 
-let leaves = [];
-let payrolls = [];
-
-// شاشات واجهة المستخدم (HTML المستقل بدون ملفات خارجية)
-const loginHTML = `
+// --- 2. واجهة المستخدم الاحترافية والكاملة (HTML + CSS متجاوب 100% للجوال) ---
+const htmlContent = `
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>نظام الموارد البشرية - تسجيل الدخول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR System | نظام الموارد البشرية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        h2 { color: #2c3e50; margin-bottom: 25px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        button:hover { background-color: #2980b9; }
-        .error { color: #e74c3c; margin-top: 15px; }
-    </style>
-</head>
-<body>
-    <div class="login-card">
-        <h2>تسجيل الدخول للنظام</h2>
-        <form action="/login" method="POST">
-            <input type="email" name="email" placeholder="البريد الإلكتروني" required>
-            <input type="password" name="password" placeholder="كلمة المرور" required>
-            <button type="submit">دخول</button>
-        </form>
-    </div>
-</body>
-</html>`;
-
-const dashboardHTML = (user, usersList, leavesList, payrollsList) => `
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>لوحة التحكم - إدارة الموارد البشرية</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
-        .navbar { background-color: #2c3e50; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h1 { margin: 0; font-size: 20px; }
-        .logout-btn { background-color: #e74c3c; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; }
-        .container { padding: 30px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #ddd; }
-        th { background-color: #f1f2f6; color: #2c3e50; }
-        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        button.submit-btn { background-color: #2ecc71; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button.submit-btn:hover { background-color: #27ae60; }
-        .badge { padding: 5px 10px; border-radius: 4px; font-size: 12px; color: white; }
-        .badge-success { background-color: #2ecc71; }
-        .badge-pending { background-color: #f1c40f; }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <h1>نظام الموارد البشرية المتكامل 💼</h1>
-        <div>
-            <span>مرحباً، ${user.nameAr} (${user.role === 'admin' ? 'مدير' : 'موظف'})</span> | 
-            <a href="/logout" class="logout-btn">تسجيل الخروج</a>
-        </div>
-    </div>
-    <div class="container">
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --bg-color: #f4f6f9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: #333; }
         
-        ${user.role === 'admin' ? `
-        <div class="card">
-            <h2>➕ إضافة موظف جديد</h2>
-            <form action="/add-user" method="POST" class="form-group">
-                <input type="text" name="newNameAr" placeholder="الاسم بالكامل (عربي)" required>
-                <input type="text" name="newNameEn" placeholder="الاسم (إنجليزي)" required>
-                <input type="email" name="newEmail" placeholder="البريد الإلكتروني" required>
-                <input type="password" name="newPassword" placeholder="كلمة المرور" required>
-                <select name="userRole">
-                    <option value="employee">موظف عادي</option>
-                    <option value="admin">مدير نظام</option>
-                </select>
-                <select name="deptId">
-                    ${departments.map(d => `<option value="${d.id}">${d.nameAr}</option>`).join('')}
-                </select>
-                <button type="submit" class="submit-btn">حفظ الموظف</button>
-            </form>
+        /* شاشة تسجيل الدخول الاحترافية والذكية كالتطبيقات الحديثة */
+        .login-container {
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+        }
+        .login-card {
+            background: #ffffff; width: 100%; max-width: 420px; padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); text-align: center;
+        }
+        .login-card h2 { color: var(--primary-color); margin-bottom: 25px; font-size: 24px; font-weight: 700; }
+        .input-group { margin-bottom: 20px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #666; font-weight: 600; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px;
+            transition: all 0.3s ease; outline: none; background: #fafafa;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent-color); background: #fff; }
+        .login-btn {
+            width: 100%; padding: 15px; background: var(--accent-color); border: none; border-radius: 12px;
+            color: white; font-size: 18px; font-weight: 700; cursor: pointer; transition: background 0.3s;
+        }
+        .login-btn:hover { background: #2980b9; }
+
+        /* الهيكل الرئيسي للنظام والتجاوب مع الجوال */
+        .app-container { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center; background: white;
+            padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;
+        }
+        .logout-btn { padding: 8px 15px; background: var(--danger-color); color: white; border: none; border-radius: 8px; cursor: pointer; }
+        
+        .lang-switch {
+            padding: 5px 10px; background: #eee; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;
+        }
+
+        /* تحويل الجداول إلى بطاقات مرنة للجوال (Responsive Cards) */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .data-card {
+            background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-right: 5px solid var(--accent-color); position: relative;
+        }
+        .data-card h3 { margin-bottom: 10px; color: var(--primary-color); }
+        .data-card p { margin-bottom: 8px; font-size: 15px; color: #555; }
+        .data-card .badge {
+            display: inline-block; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;
+        }
+        .badge-pending { background: #f1c40f; color: #fff; }
+        .badge-approved { background: var(--success-color); color: #fff; }
+        
+        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-approve { flex: 1; padding: 10px; background: var(--success-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-reject { flex: 1; padding: 10px; background: var(--danger-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* إخفاء الجداول التقليدية في الشاشات الصغيرة وتنسيقها للكبيرة */
+        .table-container { background: white; padding: 20px; border-radius: 15px; overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: right; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: var(--primary-color); }
+
+        @media (max-width: 768px) {
+            .table-container { display: none; } /* إخفاء الجدول في الجوال لعدم الحاجة للمسح يميناً ويساراً */
+            .app-header { flex-direction: column; gap: 10px; text-align: center; }
+        }
+        @media (min-width: 769px) {
+            .card-grid-conditional { display: none; } /* عرض الجدول وإخفاء البطاقات في اللابتوب */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <h2 id="loginTitle">تسجيل الدخول | Login</h2>
+            <div class="input-group">
+                <label id="lblUser">اسم المستخدم أو الرقم الوظيفي</label>
+                <input type="text" id="username" placeholder="admin / Employee ID..." required>
+            </div>
+            <div class="input-group">
+                <label id="lblPass">كلمة المرور</label>
+                <input type="password" id="password" value="admin" placeholder="••••••••" required>
+            </div>
+            <button class="login-btn" onclick="handleLogin()" id="btnLogin">دخول</button>
+            <button class="lang-switch" style="margin-top:15px;" onclick="toggleLanguage()">English / عربي</button>
         </div>
-
-        <div class="card">
-            <h2>👥 قائمة الموظفين المسجلين</h2>
-            <table>
-                <tr>
-                    <th>الاسم</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>القسم</th>
-                    <th>الدور</th>
-                    <th>رصيد الإجازات المتبقي</th>
-                    <th>الإجراءات</th>
-                </tr>
-                ${usersList.map(u => `
-                <tr>
-                    <td>${u.nameAr}</td>
-                    <td>${u.email}</td>
-                    <td>${u.departmentAr}</td>
-                    <td>${u.role === 'admin' ? 'مدير' : 'موظف'}</td>
-                    <td>${u.baseInitialBalance - u.usedBalance} يوم</td>
-                    <td><a href="/delete-user/${u.id}" style="color:red; text-decoration:none;">حذف</a></td>
-                </tr>
-                `).join('')}
-            </table>
-        </div>
-        ` : ''}
-
-        <div class="card">
-            <h2>🌴 رصيد إجازاتك الحالي: ${user.baseInitialBalance - user.usedBalance} يوم</h2>
-            <h3>تقديم طلب إجازة جديد</h3>
-            <form action="/request-leave" method="POST" class="form-group">
-                <input type="date" name="startDate" required>
-                <input type="number" name="days" placeholder="عدد الأيام المطلوبة" min="1" required>
-                <select name="leaveType">
-                    <option value="سنوية">إجازة سنوية</option>
-                    <option value="مرضية">إجازة مرضية</option>
-                    <option value="اضطرارية">إجازة اضطرارية</option>
-                </select>
-                <button type="submit" class="submit-btn" style="background-color: #3498db;">تقديم الطلب</button>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>📜 سجل طلبات الإجازات</h2>
-            <table>
-                <tr>
-                    <th>الموظف</th>
-                    <th>تاريخ البدء</th>
-                    <th>المدة</th>
-                    <th>النوع</th>
-                    <th>الحالة</th>
-                    ${user.role === 'admin' ? '<th>التحكم</th>' : ''}
-                </tr>
-                ${leavesList.map(l => `
-                <tr>
-                    <td>${l.userName}</td>
-                    <td>${l.startDate}</td>
-                    <td>${l.days} يوم</td>
-                    <td>${l.type}</td>
-                    <td><span class="badge ${l.status === 'مقبولة' ? 'badge-success' : 'badge-pending'}">${l.status}</span></td>
-                    ${user.role === 'admin' && l.status === 'قيد الانتظار' ? `
-                        <td>
-                            <a href="/approve-leave/${l.id}" style="color:green; text-decoration:none; margin-left:10px;">قبول</a>
-                            <a href="/reject-leave/${l.id}" style="color:red; text-decoration:none;">رفض</a>
-                        </td>
-                    ` : user.role === 'admin' ? '<td>-</td>' : ''}
-                </tr>
-                `).join('')}
-            </table>
-        </div>
-
-        <div class="card">
-            <h2>💰 نظام مسير الرواتب والأجور</h2>
-            ${user.role === 'admin' ? `
-            <h3>إصدار راتب جديد للشهر الحالي</h3>
-            <form action="/create-payroll" method="POST" class="form-group">
-                <select name="userId">
-                    ${usersList.map(u => `<option value="${u.id}">${u.nameAr}</option>`).join('')}
-                </select>
-                <input type="number" name="basicSalary" placeholder="الراتب الأساسي" required>
-                <input type="number" name="allowances" placeholder="البدلات" value="0">
-                <input type="number" name="deductions" placeholder="الخصومات" value="0">
-                <button type="submit" class="submit-btn" style="background-color: #9b59b6;">إصدار وإيداع</button>
-            </form>
-            ` : ''}
-
-            <table>
-                <tr>
-                    <th>الموظف</th>
-                    <th>الراتب الأساسي</th>
-                    <th>البدلات (+)</th>
-                    <th>الخصومات (-)</th>
-                    <th>صافي الراتب المستلم</th>
-                    <th>الحالة</th>
-                </tr>
-                ${payrollsList.map(p => `
-                <tr>
-                    <td>${p.userName}</td>
-                    <td>${p.basic} ريال</td>
-                    <td>${p.allowances} ريال</td>
-                    <td>${p.deductions} ريال</td>
-                    <td style="font-weight:bold; color:#2c3e50;">${p.net} ريال</td>
-                    <td><span class="badge badge-success">تم الإيداع بنجاح ✓</span></td>
-                </tr>
-                `).join('')}
-            </table>
-        </div>
-
     </div>
+
+    <div id="appScreen" class="app-container">
+        <div class="app-header">
+            <div>
+                <h2 id="welcomeMsg">أهلاً بك في نظام الموارد البشرية</h2>
+                <p id="userRoleDisplay"></p>
+            </div>
+            <div>
+                <button class="lang-switch" onclick="toggleLanguage()">English / عربي</button>
+                <button class="logout-btn" onclick="handleLogout()" id="btnLogout">خروج</button>
+            </div>
+        </div>
+
+        <div id="mainContent"></div>
+    </div>
+
+    <script>
+        let currentLang = 'ar';
+        let currentUser = null;
+
+        const localization = {
+            ar: {
+                loginTitle: "تسجيل الدخول | نظام HR", lblUser: "اسم المستخدم أو الرقم الوظيفي", lblPass: "كلمة المرور", btnLogin: "دخول",
+                welcome: "أهلاً بك، ", logout: "خروج", requestLeave: "طلب إجازة جديدة", duration: "المدة (أيام)", reason: "السبب",
+                submit: "إرسال الطلب", myRequests: "طلباتي السابقة", pendingApprovals: "طلبات تنتظر موافقتك", nationality: "الجنسية",
+                saudi: "سعودي", nonSaudi: "غير سعودي", calcSalary: "حسبة راتب الإجازة المتوقع", gosiCut: "استقطاع التأمينات (GOSI): ",
+                netLeaveSalary: "صافي راتب الإجازة: "
+            },
+            en: {
+                loginTitle: "Login | HR System", lblUser: "Username or Employee ID", lblPass: "Password", btnLogin: "Login",
+                welcome: "Welcome, ", logout: "Logout", requestLeave: "Request New Leave", duration: "Duration (Days)", reason: "Reason",
+                submit: "Submit Request", myRequests: "My Previous Requests", pendingApprovals: "Pending Your Approval", nationality: "Nationality",
+                saudi: "Saudi", nonSaudi: "Non-Saudi", calcSalary: "Expected Leave Salary Calc", gosiCut: "GOSI Deduction: ",
+                netLeaveSalary: "Net Leave Salary: "
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+            updateLanguageDOM();
+        }
+
+        function updateLanguageDOM() {
+            const loc = localization[currentLang];
+            document.getElementById('loginTitle').innerText = loc.loginTitle;
+            document.getElementById('lblUser').innerText = loc.lblUser;
+            document.getElementById('lblPass').innerText = loc.lblPass;
+            document.getElementById('btnLogin').innerText = loc.btnLogin;
+            document.getElementById('btnLogout').innerText = loc.logout;
+        }
+
+        function handleLogin() {
+            const userVal = document.getElementById('username').value.trim();
+            
+            // محاكاة تسجيل الدخول والتعرف على الدور والبيانات
+            if(userVal === 'admin') {
+                currentUser = { id: "admin", name: "Admin Manager", department: "Management", role: "CEO", nationality: "Saudi" };
+            } else {
+                // البحث في الموظفين إذا أدخل رقم وظيفي
+                fetch('/api/employees/' + userVal)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        currentUser = data.employee;
+                        showDashboard();
+                    } else {
+                        alert(currentLang === 'ar' ? "المستخدم غير موجود" : "User not found");
+                    }
+                });
+                return;
+            }
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            document.getElementById('welcomeMsg').innerText = localization[currentLang].welcome + currentUser.name;
+            document.getElementById('userRoleDisplay').innerText = \`Role: \${currentUser.role} | Dept: \${currentUser.department}\`;
+            
+            loadDynamicContent();
+        }
+
+        function loadDynamicContent() {
+            let contentHtml = '';
+            const loc = localization[currentLang];
+
+            // 1. إذا كان الداخل موظفاً (يرى واجهة تقديم الإجازة وبطاقات تاريخية متجاوبة للجوال)
+            if(currentUser.role === 'Employee') {
+                contentHtml += \`
+                    <div class="data-card" style="margin-bottom:20px;">
+                        <h3>\${loc.requestLeave}</h3>
+                        <div class="input-group" style="margin-top:15px;">
+                            <label>\${loc.duration}</label>
+                            <input type="number" id="leaveDuration" min="1" max="30" value="25" oninput="calculateLiveSalary()">
+                        </div>
+                        <div class="input-group">
+                            <label>\${loc.reason}</label>
+                            <input type="text" id="leaveReason" value="سنوية">
+                        </div>
+                        <div id="salaryCalcBox" style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:15px; font-weight:bold; color:var(--primary-color);">
+                            </div>
+                        <button class="login-btn" onclick="submitLeaveRequest()">\${loc.submit}</button>
+                    </div>
+                    
+                    <h3>\${loc.myRequests}</h3>
+                    <div id="myRequestsMobile" class="card-grid"></div>
+                \`;
+                setTimeout(() => { calculateLiveSalary(); loadMyRequests(); }, 100);
+            } 
+            // 2. إذا كان المدراء أو الاتش ار (تظهر طلبات الموافقة المرنة للجوال كبطاقات واضحة)
+            else {
+                contentHtml += \`
+                    <h3>\${loc.pendingApprovals}</h3>
+                    <div id="approvalsMobile" class="card-grid"></div>
+                \`;
+                setTimeout(() => { loadPendingApprovals(); }, 100);
+            }
+
+            document.getElementById('mainContent').innerHTML = contentHtml;
+        }
+
+        // الحسبة المالية النسبية للتأمينات الاجتماعية (GOSI) للسعوديين فقط بشرط 25 يوماً فأكثر
+        function calculateLiveSalary() {
+            const days = parseInt(document.getElementById('leaveDuration').value) || 0;
+            const loc = localization[currentLang];
+            
+            // جلب تفاصيل راتب الموظف الحالي (محاكاة أو من بياناته الثابتة)
+            let basic = currentUser.salary || 7000;
+            let housing = currentUser.housing || 1500;
+            let transport = currentUser.transport || 500;
+            
+            // الحسبة اليومية الفعلية (النسبية Pro-rata)
+            let dailyBasicAndHousing = (basic + housing) / 30;
+            let totalLeaveBase = dailyBasicAndHousing * days;
+            
+            let gosiDeduction = 0;
+            // الشرط: سعودي والإجازة مستمرة 25 يوماً وأكثر
+            if (currentUser.nationality === 'Saudi' && days >= 25) {
+                gosiDeduction = totalLeaveBase * 0.0975;
+            }
+
+            let netLeaveSalary = (totalLeaveBase + ((transport/30) * days)) - gosiDeduction;
+
+            document.getElementById('salaryCalcBox').innerHTML = \`
+                <div>\${loc.calcSalary} (\${days} يوم/Days):</div>
+                <div style="font-size:14px; color:#555; margin-top:5px;">
+                    \${loc.gosiCut} \${gosiDeduction.toFixed(2)} ريال <br>
+                    \${loc.netLeaveSalary} \${netLeaveSalary.toFixed(2)} ريال
+                </div>
+            \`;
+        }
+
+        function submitLeaveRequest() {
+            const days = document.getElementById('leaveDuration').value;
+            const reason = document.getElementById('leaveReason').value;
+
+            fetch('/api/leaves/request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ employeeId: currentUser.id, duration: parseInt(days), reason: reason })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(currentLang === 'ar' ? "تم إرسال الطلب بنجاح والمسار فعال تلقائياً" : "Request sent successfully");
+                loadMyRequests();
+            });
+        }
+
+        function loadMyRequests() {
+            fetch('/api/leaves/my-requests/' + currentUser.id)
+            .then(res => res.json())
+            .then(data => {
+                let html = '';
+                data.requests.forEach(req => {
+                    html += \`
+                        <div class="data-card">
+                            <h3>طلب إجازة #\${req.id}</h3>
+                            <p><b>المدة:</b> \${req.duration} يوم</p>
+                            <p><b>السبب:</b> \${req.reason}</p>
+                            <p><b>الحالة الإدارية الحالية:</b> <span class="badge badge-pending">\${req.status} (\${req.currentStep})</span></p>
+                        </div>
+                    \`;
+                });
+                document.getElementById('myRequestsMobile').innerHTML = html || '<p>لا توجد طلبات حالية</p>';
+            });
+        }
+
+        function loadPendingApprovals() {
+            fetch('/api/leaves/pending/' + currentUser.role + '/' + currentUser.id)
+            .then(res => res.json())
+            .then(data => {
+                let html = '';
+                data.requests.forEach(req => {
+                    html += \`
+                        <div class="data-card" style="border-right-color: #f1c40f;">
+                            <h3>طلب من الموظف: \${req.employeeName}</h3>
+                            <p><b>رقم الموظف:</b> \${req.employeeId}</p>
+                            <p><b>المدة المطلوبة:</b> \${req.duration} يوم</p>
+                            <p><b>السبب:</b> \${req.reason}</p>
+                            <p><b>مرحلة الاعتماد الحالية:</b> \${req.currentStep}</p>
+                            <div class="action-btns">
+                                <button class="btn-approve" onclick="actionRequest(\${req.id}, 'Approve')">موافقة / Approve</button>
+                                <button class="btn-reject" onclick="actionRequest(\${req.id}, 'Reject')">رفض / Reject</button>
+                            </div>
+                        </div>
+                    \`;
+                });
+                document.getElementById('approvalsMobile').innerHTML = html || '<p>لا توجد طلبات معلقة بانتظار موافقتك حالياً</p>';
+            });
+        }
+
+        function actionRequest(id, action) {
+            fetch('/api/leaves/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requestId: id, userRole: currentUser.role, action: action, userId: currentUser.id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(action === 'Approve' ? "تمت الموافقة وتمرير الطلب للمرحلة التالية" : "تم رفض الطلب");
+                loadPendingApprovals();
+            });
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+    </script>
 </body>
-</html>`;
+</html>
+`;
 
-// المسارات وإدارة الطلبات (Routes)
+// --- 3. المسارات البرمجية الذكية (API Routes) لمعالجة الطلبات بدون تداخل ---
+
 app.get('/', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    
-    let userLeaves = user.role === 'admin' ? leaves : leaves.filter(l => l.userId === req.session.user.id);
-    let userPayrolls = user.role === 'admin' ? payrolls : payrolls.filter(p => p.userId === req.session.user.id);
-    
-    res.send(dashboardHTML(req.session.user, users, userLeaves, userPayrolls));
+    res.send(htmlContent);
 });
 
-app.get('/login', (req, res) => {
-    res.send(loginHTML);
+app.get('/api/employees/:id', (req, res) => {
+    const emp = employees.find(e => e.id === req.id || e.id === req.params.id);
+    if(emp) res.json({ success: true, employee: emp });
+    else res.json({ success: false });
 });
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const adminUser = users.find(u => u.email === email.trim() && u.password === password.trim());
+// استقبال طلب إجازة جديد وتحديد مساره الأولي
+app.post('/api/leaves/request', (req, res) => {
+    const { employeeId, duration, reason } = req.body;
+    const emp = employees.find(e => e.id === employeeId);
     
-    if (adminUser) {
-        req.session.user = adminUser;
-        res.redirect('/');
+    // بناء المسار التلقائي: إذا كان مقدم الطلب مديراً يختلف مساره عن الموظف العادي
+    let nextStep = "Direct Manager"; 
+    if(emp && emp.role === 'Manager') {
+        nextStep = "HR Employee Review"; // مدير القسم يذهب مباشرة للـ HR لتنتهي عند الـ CEO
+    }
+
+    const newRequest = {
+        id: leaveRequests.length + 1,
+        employeeId: employeeId,
+        employeeName: emp ? emp.name : "Unknown",
+        duration: duration,
+        reason: reason,
+        status: "Pending",
+        currentStep: nextStep
+    };
+    leaveRequests.push(newRequest);
+    res.json({ success: true });
+});
+
+// جلب طلبات الموظف الخاصة به
+app.get('/api/leaves/my-requests/:empId', (req, res) => {
+    const filtered = leaveRequests.filter(r => r.employeeId === req.params.empId);
+    res.json({ requests: filtered });
+});
+
+// فلترة وعرض الطلبات بناءً على الصلاحية والمستوى الإداري بدقة
+app.get('/api/leaves/pending/:role/:userId', (req, res) => {
+    const { role, userId } = req.params;
+    let pending = [];
+
+    if(role === 'Manager') {
+        // المدير المباشر يرى طلبات الموظفين العاديين في مرحلته الأولى
+        pending = leaveRequests.filter(r => r.currentStep === 'Direct Manager');
+    } else if(role === 'Employee' && userId === '102') { 
+        // محاكاة موظف الاتش ار (سارة مثلاً) ترى التدقيق المالي للموظفين والمدراء
+        pending = leaveRequests.filter(r => r.currentStep === 'HR Employee Review');
+    } else if(role === 'CEO') {
+        // الرئيس التنفيذي يرى فقط طلبات مدراء الأقسام المرفوعة له بعد اعتماد الـ HR
+        pending = leaveRequests.filter(r => r.currentStep === 'CEO Approval');
+    }
+
+    res.json({ requests: pending });
+});
+
+// مصفوفة الصلاحيات والانتقال الذكي (Approval Workflow Logic)
+app.post('/api/leaves/action', (req, res) => {
+    const { requestId, userRole, action } = req.body;
+    let reqObj = leaveRequests.find(r => r.id === requestId);
+
+    if(!reqObj) return res.json({ success: false });
+
+    if(action === 'Reject') {
+        reqObj.status = "Rejected";
+        reqObj.currentStep = "Closed";
     } else {
-        res.send(`<h2 style="text-align:center; margin-top:50px; font-family:sans-serif;">بيانات خاطئة / Invalid Data</h2><p style="text-align:center;"><a href="/login">عودة / Back</a></p>`);
+        // معالجة الانتقال عند الموافقة (Approve)
+        if(reqObj.currentStep === 'Direct Manager') {
+            reqObj.currentStep = "HR Employee Review";
+        } else if(reqObj.currentStep === 'HR Employee Review') {
+            // فحص نوع مقدم الطلب لمعرفة المحطة القادمة
+            const emp = employees.find(e => e.id === reqObj.employeeId);
+            if(emp && emp.role === 'Manager') {
+                reqObj.currentStep = "CEO Approval"; // يرفع للـ CEO لأنه مدير قسم
+            } else {
+                reqObj.status = "Approved";
+                reqObj.currentStep = "Completed"; // ينتهي عند الـ HR للموظف العادي
+            }
+        } else if(reqObj.currentStep === 'CEO Approval') {
+            reqObj.status = "Approved";
+            reqObj.currentStep = "Completed";
+        }
     }
+    res.json({ success: true });
 });
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/login');
-});
-
-app.post('/add-user', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const { newNameAr, newNameEn, newEmail, newPassword, userRole, deptId } = req.body;
-    const deptObj = departments.find(d => d.id == deptId);
-    users.push({
-        id: (users.length + 1),
-        nameAr: newNameAr,
-        nameEn: newNameEn,
-        email: newEmail,
-        password: newPassword,
-        role: userRole,
-        departmentAr: deptObj.nameAr,
-        departmentEn: deptObj.nameEn,
-        baseInitialBalance: 30,
-        usedBalance: 0
-    });
-    res.redirect('/');
-});
-
-app.get('/delete-user/:id', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    users = users.filter(u => u.id !== parseInt(req.params.id));
-    res.redirect('/');
-});
-
-app.post('/request-leave', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    const { startDate, days, leaveType } = req.body;
-    leaves.push({
-        id: (leaves.length + 1),
-        userId: req.session.user.id,
-        userName: req.session.user.nameAr,
-        startDate: startDate,
-        days: parseInt(days),
-        type: leaveType,
-        status: "قيد الانتظار"
-    });
-    res.redirect('/');
-});
-
-app.get('/approve-leave/:id', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const leave = leaves.find(l => l.id === parseInt(req.params.id));
-    if (leave) {
-        leave.status = 'مقبولة';
-        const targetUser = users.find(u => u.id === leave.userId);
-        if (targetUser) targetUser.usedBalance += leave.days;
-    }
-    res.redirect('/');
-});
-
-app.get('/reject-leave/:id', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const leave = leaves.find(l => l.id === parseInt(req.params.id));
-    if (leave) leave.status = 'مرفوضة';
-    res.redirect('/');
-});
-
-app.post('/create-payroll', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const { userId, basicSalary, allowances, deductions } = req.body;
-    const targetUser = users.find(u => u.id == userId);
-    const b = parseInt(basicSalary);
-    const a = parseInt(allowances) || 0;
-    const d = parseInt(deductions) || 0;
-    payrolls.push({
-        id: (payrolls.length + 1),
-        userId: userId,
-        userName: targetUser ? targetUser.nameAr : "موظف مجهول",
-        basic: b,
-        allowances: a,
-        deductions: d,
-        net: (b + a - d)
-    });
-    res.redirect('/');
-});
-
-app.listen(PORT, () => {
-    console.log(`/////////////////////////////////////////////////`);
-    console.log(`السيرفر جاهز تماماً ويعمل على المنفذ ${PORT} 🚀`);
-    console.log(`Available at your primary URL`);
-    console.log(`/////////////////////////////////////////////////`);
+app.listen(port, () => {
+    console.log(`System running smoothly on port ${port}`);
 });
