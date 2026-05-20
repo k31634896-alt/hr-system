@@ -10,7 +10,8 @@ const SYSTEM_START_DATE = new Date('2026-05-01');
 let departments = [
     { ar: 'الموارد البشرية', en: 'Human Resources' },
     { ar: 'المبيعات والتسويق', en: 'Sales & Marketing' },
-    { ar: 'الهندسة والتطوير', en: 'Engineering & Development' }
+    { ar: 'الهندسة والتطوير', en: 'Engineering & Development' },
+    { ar: 'الإدارة العليا', en: 'Executive Management' }
 ];
 
 let users = [
@@ -18,7 +19,8 @@ let users = [
     { id: '2', nameAr: 'مدير الموارد البشرية: العازمي', nameEn: 'HR Manager: Al-Azmi', email: 'hr_mgr', password: '123', role: 'hr_manager', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0 },
     { id: '3', nameAr: 'سارة الأحمد (موظف HR)', nameEn: 'Sara Al-Ahmad (HR Staff)', email: 'sara', password: '123', role: 'hr_employee', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0 },
     { id: '4', nameAr: 'فهد صالح', nameEn: 'Fahad Saleh', email: 'fahad', password: '123', role: 'dept_manager', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 0 },
-    { id: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', email: 'fatima', password: '123', role: 'employee', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 5 }
+    { id: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', email: 'fatima', password: '123', role: 'employee', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 5 },
+    { id: '6', nameAr: 'الرئيس التنفيذي (CEO)', nameEn: 'Chief Executive Officer', email: 'ceo', password: '123', role: 'ceo', departmentAr: 'الإدارة العليا', departmentEn: 'Executive Management', baseInitialBalance: 0, usedBalance: 0 }
 ];
 
 let leaves = [
@@ -44,6 +46,9 @@ const translations = {
         username: 'اليوزر (اسم المستخدم):',
         password: 'كلمة المرور (الباسورد):',
         save: '✓ حفظ وإعتماد البيانات',
+        copy_user: 'نسخ اليوزر',
+        copy_pass: 'نسخ الباسورد',
+        edit_balance: 'تعديل الرصيد الأساسي',
         emp_management: 'الإدارة المباشرة للموظفين وتعيين الصلاحيات بالفصل الجديد',
         th_name: 'اسم الموظف',
         th_dept: 'القسم',
@@ -65,6 +70,7 @@ const translations = {
         role_manager: 'المدير المباشر (رئيس القسم)',
         role_hr: 'موظف في قسم (HR)',
         role_hr_manager: 'مدير الموارد البشرية (صاحب الاعتماد النهائي)',
+        role_ceo: 'الرئيس التنفيذي (CEO)',
         add_btn: '+ اعتماد الموظف الجديد فوراً',
         dept_title: 'إدارة الأقسام والجهات داخل المنظومة',
         add_dept_title: '+ إضافة قسم / منشأة جديدة',
@@ -100,7 +106,11 @@ const translations = {
         ph_housing: 'بدل السكن',
         ph_trans: 'بدل مواصلات',
         ph_food: 'بدل طعام',
-        history_title: 'سجل تواريخ الإجازات المعتمدة وتفاصيل الرواتب'
+        history_title: 'سجل تواريخ الإجازات المعتمدة وتفاصيل الرواتب',
+        workflow_title: 'مسار الموافقات (التسلسل الهرمي)',
+        workflow_desc: 'الموظف → المدير المباشر → موظف HR → مدير HR → CEO',
+        ceo_view: 'عرض CEO للنظام',
+        all_leaves: 'جميع طلبات الإجازات في النظام'
     },
     en: {
         title: 'Integrated HR Management System',
@@ -120,6 +130,9 @@ const translations = {
         username: 'Username (Login):',
         password: 'Password:',
         save: '✓ Save and Approve Data',
+        copy_user: 'Copy Username',
+        copy_pass: 'Copy Password',
+        edit_balance: 'Edit Base Balance',
         emp_management: 'Employee Management & Role Assignment',
         th_name: 'Employee Name',
         th_dept: 'Department',
@@ -141,6 +154,7 @@ const translations = {
         role_manager: 'Direct Manager (Head of Dept)',
         role_hr: 'HR Department Staff',
         role_hr_manager: 'HR Manager (Final Approver)',
+        role_ceo: 'Chief Executive Officer (CEO)',
         add_btn: '+ Approve New Employee Immediately',
         dept_title: 'Manage Departments & Entities',
         add_dept_title: '+ Add New Department',
@@ -176,7 +190,11 @@ const translations = {
         ph_housing: 'Housing Allowance',
         ph_trans: 'Transport Allowance',
         ph_food: 'Food Allowance',
-        history_title: 'Approved Leaves History & Salary Breakdown'
+        history_title: 'Approved Leaves History & Salary Breakdown',
+        workflow_title: 'Approval Workflow (Hierarchical)',
+        workflow_desc: 'Employee → Direct Manager → HR Staff → HR Manager → CEO',
+        ceo_view: 'CEO System View',
+        all_leaves: 'All Leave Requests in System'
     }
 };
 
@@ -190,7 +208,7 @@ const leaveTypesMap = {
 };
 
 function calculateUserBalances(user) {
-    if (user.role === 'admin') return { initial: '0.0', used: 0, balance: '0.0' };
+    if (user.role === 'admin' || user.role === 'ceo') return { initial: '0.0', used: 0, balance: '0.0' };
     const currentDate = new Date();
     let monthsPassed = (currentDate.getFullYear() - SYSTEM_START_DATE.getFullYear()) * 12 + (currentDate.getMonth() - SYSTEM_START_DATE.getMonth());
     if (monthsPassed < 0) monthsPassed = 0;
@@ -204,7 +222,10 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
     let pendingCount = leaves.filter(l => l.finalStatusAr.includes('قيد الانتظار')).length;
     let t = translations[lang];
     let isRtl = lang === 'ar';
-   
+    
+    let showAdminTabs = user.role === 'admin';
+    let showCEOTab = user.role === 'ceo';
+    
     return `
     <!DOCTYPE html>
     <html lang="${lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
@@ -221,6 +242,10 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
             .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #1abc9c; color: white; }
             .main-content { margin-${isRtl ? 'right' : 'left'}: 280px; padding: 25px; width: calc(100% - 280px); }
             .card-custom { border-radius: 8px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-bottom: 20px; }
+            .workflow-step { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+            .workflow-step.active { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+            .copy-btn { cursor: pointer; transition: all 0.3s; }
+            .copy-btn:hover { transform: scale(1.05); }
             @media (max-width: 768px) { .sidebar { width: 100%; min-height: auto; position: relative; } .main-content { margin: 0; width: 100%; } .d-flex { flex-direction: column; } }
             @media print { .sidebar, .btn, .no-print, form, .alert, .card-custom-header, select, input, .input-group { display: none !important; } .main-content { margin: 0 !important; width: 100% !important; padding: 0; } .print-section { display: block !important; border: none !important; } }
         </style>
@@ -229,15 +254,18 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
         <div class="d-flex">
             <div class="sidebar p-3 d-flex flex-column no-print">
                 <div class="text-center py-3 border-bottom border-secondary mb-3">
-                    <h4 class="fw-bold text-warning m-0"><i class="bi bi-shield-lock-fill"></i> نظام المراقبة والأدمن</h4>
+                    <h4 class="fw-bold text-warning m-0"><i class="bi bi-shield-lock-fill"></i> ${lang === 'ar' ? 'نظام المراقبة والأدمن' : 'HR Control System'}</h4>
                 </div>
                 <ul class="nav flex-column flex-grow-1">
                     <li class="nav-item"><a href="/" class="nav-link ${currentTab==='dashboard'?'active':''}"><span><i class="bi bi-grid-1x2-fill me-2"></i> ${t.dashboard}</span></a></li>
                     <li class="nav-item"><a href="/leaves" class="nav-link ${currentTab==='leaves'?'active':''}"><span><i class="bi bi-calendar-check-fill me-2"></i> ${t.leaves}</span> <span class="badge bg-danger">${pendingCount}</span></a></li>
-                    ${user.role === 'admin' ? `
+                    ${showAdminTabs ? `
                         <li class="nav-item"><a href="/departments" class="nav-link ${currentTab==='departments'?'active':''}"><span><i class="bi bi-building me-2"></i> ${t.manage_depts}</span></a></li>
                         <li class="nav-item"><a href="/add-employee" class="nav-link ${currentTab==='add-employee'?'active':''}"><span><i class="bi bi-person-plus-fill me-2"></i> ${t.add_employee}</span></a></li>
                         <li class="nav-item"><a href="/reports" class="nav-link ${currentTab==='reports'?'active':''}"><span><i class="bi bi-printer-fill me-2"></i> ${t.reports}</span></a></li>
+                    ` : ''}
+                    ${showCEOTab ? `
+                        <li class="nav-item"><a href="/ceo-dashboard" class="nav-link ${currentTab==='ceo-dashboard'?'active':''}"><span><i class="bi bi-briefcase-fill me-2"></i> ${t.ceo_view}</span></a></li>
                     ` : ''}
                 </ul>
             </div>
@@ -256,6 +284,7 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
                 ${contentHtml}
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>`;
 }
@@ -267,6 +296,7 @@ app.get('/toggle-lang', (req, res) => {
     if (dest === 'add-employee') return res.redirect('/add-employee');
     if (dest === 'leaves') return res.redirect('/leaves');
     if (dest === 'reports') return res.redirect('/reports');
+    if (dest === 'ceo-dashboard') return res.redirect('/ceo-dashboard');
     res.redirect('/');
 });
 
@@ -296,7 +326,6 @@ app.post('/login', (req, res) => {
 });
 app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/login'); });
 
-// المسار الإصلاحي لمنع ظهور شاشة بيضاء عند العودة غير المعرفة
 app.get('/back', (req, res) => { res.redirect('/'); });
 
 app.get('/', (req, res) => {
@@ -305,9 +334,23 @@ app.get('/', (req, res) => {
     const t = translations[lang];
     const u = users.find(usr => usr.id === req.session.user.id) || req.session.user;
     const balances = calculateUserBalances(u);
-   
+    
     let html = '';
-    if (u.role !== 'admin') {
+    
+    html += `
+    <div class="card card-custom p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-diagram-3-fill text-primary"></i> ${t.workflow_title}</h5>
+        <div class="row g-2">
+            <div class="col"><div class="workflow-step ${u.role === 'employee' ? 'active' : ''}"><small>الموظف</small><br><strong>Employee</strong></div></div>
+            <div class="col"><div class="workflow-step ${u.role === 'dept_manager' ? 'active' : ''}"><small>المدير المباشر</small><br><strong>Direct Manager</strong></div></div>
+            <div class="col"><div class="workflow-step ${u.role === 'hr_employee' ? 'active' : ''}"><small>موظف HR</small><br><strong>HR Staff</strong></div></div>
+            <div class="col"><div class="workflow-step ${u.role === 'hr_manager' ? 'active' : ''}"><small>مدير HR</small><br><strong>HR Manager</strong></div></div>
+            <div class="col"><div class="workflow-step ${u.role === 'ceo' ? 'active' : ''}"><small>CEO</small><br><strong>CEO</strong></div></div>
+        </div>
+        <p class="text-muted small mt-2 mb-0"><i class="bi bi-info-circle"></i> ${t.workflow_desc}</p>
+    </div>`;
+    
+    if (u.role !== 'admin' && u.role !== 'ceo') {
         html += `
         <div class="card card-custom p-4">
             <h5 class="fw-bold text-dark mb-4"><i class="bi bi-pie-chart-fill text-primary"></i> ${t.avail_bal}</h5>
@@ -318,7 +361,7 @@ app.get('/', (req, res) => {
             </div>
         </div>`;
     } else {
-        html += `<div class="alert alert-info fw-bold text-center"><i class="bi bi-info-circle-fill"></i> أنت داخل الآن بحساب "مدير النظام (الأدمن)"؛ يمكنك التحكم الكامل وإصدار التقارير للموظفين والمسؤولين أدناه.</div>`;
+        html += `<div class="alert alert-info fw-bold text-center"><i class="bi bi-info-circle-fill"></i> ${lang === 'ar' ? 'أنت داخل الآن بحساب "' + (u.role === 'ceo' ? 'الرئيس التنفيذي (CEO)' : 'مدير النظام (الأدمن)') + '"؛ يمكنك التحكم الكامل وإصدار التقارير للموظفين والمسؤولين أدناه.' : 'You are logged in as "' + (u.role === 'ceo' ? 'Chief Executive Officer' : 'System Administrator') + '".'}</div>`;
     }
 
     if (u.role === 'admin') {
@@ -349,23 +392,55 @@ app.get('/', (req, res) => {
                             if(userItem.role==='hr_manager') roleText = t.role_hr_manager;
                             if(userItem.role==='hr_employee') roleText = t.role_hr;
                             if(userItem.role==='dept_manager') roleText = t.role_manager;
+                            if(userItem.role==='ceo') roleText = t.role_ceo;
                             return `
                             <tr>
                                 <td><b>${lang==='ar'? userItem.nameAr : userItem.nameEn}</b></td>
                                 <td><span class="badge bg-light text-dark border">${lang==='ar'? userItem.departmentAr : userItem.departmentEn}</span></td>
                                 <td><span class="badge bg-info-subtle text-info border border-info-subtle">${roleText}</span></td>
-                                <td><span class="text-primary">${userItem.email}</span></td>
-                                <td><code>${userItem.password}</code></td>
-                                <td><b class="text-success">${userItem.role==='admin' ? '-' : b.balance}</b></td>
                                 <td>
-                                    ${userItem.role==='admin' ? '-' : `<a href="/delete-user/${userItem.id}" class="btn btn-sm btn-outline-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')"><i class="bi bi-trash"></i> ${t.delete}</a>`}
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" value="${userItem.email}" readonly id="user-${userItem.id}">
+                                        <button class="btn btn-outline-primary copy-btn" type="button" onclick="copyToClipboard('user-${userItem.id}')"><i class="bi bi-clipboard"></i></button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" value="${userItem.password}" readonly id="pass-${userItem.id}">
+                                        <button class="btn btn-outline-success copy-btn" type="button" onclick="copyToClipboard('pass-${userItem.id}')"><i class="bi bi-clipboard"></i></button>
+                                    </div>
+                                </td>
+                                <td><b class="text-success">${userItem.role==='admin' || userItem.role==='ceo' ? '-' : b.balance}</b></td>
+                                <td>
+                                    ${userItem.role==='admin' ? '-' : `
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-warning" onclick="editBalance('${userItem.id}')" title="${t.edit_balance}"><i class="bi bi-pencil-square"></i></button>
+                                            <a href="/delete-user/${userItem.id}" class="btn btn-outline-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')"><i class="bi bi-trash"></i> ${t.delete}</a>
+                                        </div>
+                                    `}
                                 </td>
                             </tr>`;
                         }).join('')}
                     </tbody>
                 </table>
             </div>
-        </div>`;
+        </div>
+        
+        <script>
+            function copyToClipboard(elementId) {
+                const copyText = document.getElementById(elementId);
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(copyText.value);
+                alert('تم النسخ: ' + copyText.value);
+            }
+            function editBalance(userId) {
+                const newBalance = prompt('أدخل الرصيد الأساسي الجديد:');
+                if (newBalance !== null && newBalance !== '') {
+                    window.location.href = '/update-balance/' + userId + '?balance=' + newBalance;
+                }
+            }
+        </script>`;
     }
     res.send(generateLayout(u, 'dashboard', html, lang));
 });
@@ -433,6 +508,7 @@ app.get('/add-employee', (req, res) => {
                     <option value="dept_manager">${t.role_manager}</option>
                     <option value="hr_employee">${t.role_hr}</option>
                     <option value="hr_manager">${t.role_hr_manager}</option>
+                    <option value="ceo">${t.role_ceo}</option>
                 </select>
             </div>
             <div class="col-md-6"><label class="form-label small fw-bold">${t.th_user}</label><input type="text" name="newEmail" class="form-control" required></div>
@@ -448,13 +524,15 @@ app.get('/leaves', (req, res) => {
     const lang = req.session.lang || 'ar';
     const t = translations[lang];
     const user = users.find(u => u.id === req.session.user.id) || req.session.user;
-   
+    
     let visibleLeaves = leaves;
     if (user.role === 'employee') {
         visibleLeaves = leaves.filter(l => l.employeeId === user.id);
     } else if (user.role === 'dept_manager') {
         visibleLeaves = leaves.filter(l => l.departmentAr === user.departmentAr || l.employeeId === user.id);
     } else if (user.role === 'hr_employee' || user.role === 'hr_manager') {
+        visibleLeaves = leaves;
+    } else if (user.role === 'ceo') {
         visibleLeaves = leaves;
     }
 
@@ -478,7 +556,7 @@ app.get('/leaves', (req, res) => {
                 <tbody>
                     ${visibleLeaves.map(l => {
                         let actionsHtml = `<span class="text-muted small">${t.no_actions}</span>`;
-                       
+                        
                         if (user.role === 'dept_manager' && l.finalStatusAr === 'قيد الانتظار - موافقة المدير المباشر' && l.departmentAr === user.departmentAr && !l.isManagerOwnRequest) {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-success fw-bold p-1">${t.approve_step_1}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
@@ -494,7 +572,7 @@ app.get('/leaves', (req, res) => {
                             <td><b>${lang==='ar'? l.nameAr : l.nameEn}</b></td>
                             <td>${lang==='ar'? l.departmentAr : l.departmentEn}</td>
                             <td>${lang==='ar'? l.typeAr : l.typeEn}</td>
-                            <td>${l.days} يوم</td>
+                            <td>${l.days} ${lang==='ar'?'يوم':'Days'}</td>
                             <td>${lang==='ar'? l.reasonAr : l.reasonEn}</td>
                             <td><span class="badge bg-warning text-dark">${lang==='ar'? l.finalStatusAr : l.finalStatusEn}</span></td>
                             <td><span class="text-danger small">${(lang==='ar'? l.rejectReasonAr : l.rejectReasonEn) || '-'}</span></td>
@@ -512,9 +590,9 @@ app.get('/leaves', (req, res) => {
             }
         </script>
 
-        ${user.role !== 'admin' ? `
+        ${user.role !== 'admin' && user.role !== 'ceo' ? `
         <div class="mt-4 border-top pt-3 no-print" style="max-width: 500px;">
-            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-plus-circle"></i> تقديم طلب إجازة جديد لحسابك:</h6>
+            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-plus-circle"></i> ${lang === 'ar' ? 'تقديم طلب إجازة جديد لحسابك:' : 'Submit New Leave Request:'}</h6>
             <form method="POST" action="/request-leave">
                 <div class="mb-2">
                     <label class="form-label small text-muted">${t.leave_type_label}</label>
@@ -535,12 +613,12 @@ app.post('/request-leave', (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     const user = users.find(u => u.id === req.session.user.id) || req.session.user;
     const typeKey = req.body.typeKey;
-   
+    
     let initialStatusAr = 'قيد الانتظار - موافقة المدير المباشر';
     let initialStatusEn = 'Pending - Direct Manager Approval';
     let isManagerOwn = false;
 
-    if (user.role === 'dept_manager' || user.role === 'hr_manager') {
+    if (user.role === 'dept_manager' || user.role === 'hr_manager' || user.role === 'ceo') {
         initialStatusAr = 'قيد الانتظار - مراجعة موظف HR';
         initialStatusEn = 'Pending - HR Review';
         isManagerOwn = true;
@@ -613,14 +691,14 @@ app.get('/reports', (req, res) => {
         if (selectedUser) {
             const b = calculateUserBalances(selectedUser);
             const approvedLeaves = leaves.filter(l => l.employeeId === selectedUser.id && l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد');
-           
+            
             reportHtml = `
             <div class="mt-4 p-4 border border-dark rounded bg-white print-section">
                 <div class="text-center mb-4">
                     <h3 class="fw-bold">${t.report_title_print}</h3>
                     <p class="text-muted small">${t.report_head}</p>
                 </div>
-               
+                
                 <div class="row g-3 mb-4 p-3 bg-light rounded border text-start">
                     <div class="col-md-6"><b>${t.th_name}:</b> ${lang==='ar'? selectedUser.nameAr : selectedUser.nameEn}</div>
                     <div class="col-md-6"><b>${t.th_dept}:</b> ${lang==='ar'? selectedUser.departmentAr : selectedUser.departmentEn}</div>
@@ -646,12 +724,12 @@ app.get('/reports', (req, res) => {
                             approvedLeaves.map(l => {
                                 const dateObj = new Date(l.date);
                                 const formattedDate = lang==='ar' ? dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) : dateObj.toLocaleDateString('en-US');
-                               
+                                
                                 let salaryCalculatorHtml = '';
                                 if (l.days >= 15) {
                                     salaryCalculatorHtml = `
                                     <div class="p-2 border rounded bg-white text-start no-print mb-2">
-                                        <small class="fw-bold text-success d-block mb-1">${t.card_box_title}</small>
+                                        <small class="fw-bold text-success d-block mb-1">${t.calc_box_title}</small>
                                         <div class="row g-1">
                                             <div class="col-6"><input type="number" id="base-${l.id}" placeholder="${t.ph_base}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
                                             <div class="col-6"><input type="number" id="housing-${l.id}" placeholder="${t.ph_housing}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
@@ -659,7 +737,7 @@ app.get('/reports', (req, res) => {
                                             <div class="col-6"><input type="number" id="food-${l.id}" placeholder="${t.ph_food}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
                                         </div>
                                     </div>
-                                   
+                                    
                                     <div class="p-2 border rounded bg-light text-start text-dark shadow-sm">
                                         <div class="small border-bottom pb-1 mb-1 fw-bold text-secondary">${t.calc_detail_title} (${l.days} ${lang==='ar'?'يوم':'Days'}):</div>
                                         <div class="d-flex justify-content-between small"><span>${t.lbl_calc_base}</span> <span><b id="lbl-base-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
@@ -694,13 +772,13 @@ app.get('/reports', (req, res) => {
                         let housing = parseFloat(document.getElementById('housing-' + id).value) || 0;
                         let trans = parseFloat(document.getElementById('trans-' + id).value) || 0;
                         let food = parseFloat(document.getElementById('food-' + id).value) || 0;
-                       
+                        
                         let leafBase = (base / 30) * days;
                         let leafHousing = (housing / 30) * days;
                         let leafTrans = (trans / 30) * days;
                         let leafFood = (food / 30) * days;
                         let totalLeaveSalary = leafBase + leafHousing + leafTrans + leafFood;
-                       
+                        
                         document.getElementById('lbl-base-' + id).innerText = leafBase.toFixed(2);
                         document.getElementById('lbl-housing-' + id).innerText = leafHousing.toFixed(2);
                         document.getElementById('lbl-trans-' + id).innerText = leafTrans.toFixed(2);
@@ -730,6 +808,60 @@ app.get('/reports', (req, res) => {
     res.send(generateLayout(req.session.user, 'reports', html, lang));
 });
 
+app.get('/ceo-dashboard', (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'ceo') return res.redirect('/login');
+    const lang = req.session.lang || 'ar';
+    const t = translations[lang];
+    
+    const totalEmployees = users.filter(u => u.role !== 'admin').length;
+    const totalLeaves = leaves.length;
+    const pendingLeaves = leaves.filter(l => l.finalStatusAr.includes('قيد الانتظار')).length;
+    const approvedLeaves = leaves.filter(l => l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد').length;
+    const rejectedLeaves = leaves.filter(l => l.finalStatusAr === 'مرفوض كلياً').length;
+    
+    let html = `
+    <div class="card card-custom p-4">
+        <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-briefcase-fill text-primary"></i> ${t.ceo_view}</h5>
+        
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="p-3 border rounded bg-info text-white text-center"><h6>${lang === 'ar' ? 'إجمالي الموظفين' : 'Total Employees'}</h6><h3 class="fw-bold">${totalEmployees}</h3></div></div>
+            <div class="col-md-3"><div class="p-3 border rounded bg-warning text-dark text-center"><h6>${lang === 'ar' ? 'الطلبات المعلقة' : 'Pending Requests'}</h6><h3 class="fw-bold">${pendingLeaves}</h3></div></div>
+            <div class="col-md-3"><div class="p-3 border rounded bg-success text-white text-center"><h6>${lang === 'ar' ? 'الطلبات المعتمدة' : 'Approved Requests'}</h6><h3 class="fw-bold">${approvedLeaves}</h3></div></div>
+            <div class="col-md-3"><div class="p-3 border rounded bg-danger text-white text-center"><h6>${lang === 'ar' ? 'الطلبات المرفوضة' : 'Rejected Requests'}</h6><h3 class="fw-bold">${rejectedLeaves}</h3></div></div>
+        </div>
+        
+        <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-list-check"></i> ${t.all_leaves}</h6>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>${t.th_name}</th>
+                        <th>${t.th_dept}</th>
+                        <th>${t.th_type}</th>
+                        <th>${t.th_duration}</th>
+                        <th>${t.th_status}</th>
+                        <th>${t.th_date}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${leaves.map(l => `
+                        <tr>
+                            <td><b>${lang==='ar'? l.nameAr : l.nameEn}</b></td>
+                            <td>${lang==='ar'? l.departmentAr : l.departmentEn}</td>
+                            <td>${lang==='ar'? l.typeAr : l.typeEn}</td>
+                            <td>${l.days} ${lang==='ar'?'يوم':'Days'}</td>
+                            <td><span class="badge ${l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد' ? 'bg-success' : l.finalStatusAr === 'مرفوض كلياً' ? 'bg-danger' : 'bg-warning text-dark'}">${lang==='ar'? l.finalStatusAr : l.finalStatusEn}</span></td>
+                            <td>${l.date}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>`;
+    
+    res.send(generateLayout(req.session.user, 'ceo-dashboard', html, lang));
+});
+
 app.post('/update-admin-profile', (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
     const adminUser = users.find(u => u.role === 'admin');
@@ -739,6 +871,16 @@ app.post('/update-admin-profile', (req, res) => {
         adminUser.email = req.body.adminEmail;
         adminUser.password = req.body.adminPassword;
         req.session.user = adminUser;
+    }
+    res.redirect('/');
+});
+
+app.get('/update-balance/:id', (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
+    const user = users.find(u => u.id === req.params.id);
+    const newBalance = parseFloat(req.query.balance);
+    if (user && !isNaN(newBalance)) {
+        user.baseInitialBalance = newBalance;
     }
     res.redirect('/');
 });
