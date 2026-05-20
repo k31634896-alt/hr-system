@@ -11,21 +11,27 @@ let departments = [
     { ar: 'الموارد البشرية', en: 'Human Resources' },
     { ar: 'المبيعات والتسويق', en: 'Sales & Marketing' },
     { ar: 'الهندسة والتطوير', en: 'Engineering & Development' },
-    { ar: 'الإدارة العليا', en: 'Executive Management' }
+    { ar: 'الإدارة العليا', en: 'Executive Management' },
+    { ar: 'الشؤون الإدارية', en: 'Administrative Affairs' },
+    { ar: 'المالية', en: 'Finance' }
 ];
 
 let users = [
-    { id: '1', nameAr: 'مدير النظام (الأدمن)', nameEn: 'System Administrator', email: 'admin', password: 'admin', role: 'admin', departmentAr: 'إدارة النظام', departmentEn: 'System Admin', baseInitialBalance: 0, usedBalance: 0 },
-    { id: '2', nameAr: 'مدير الموارد البشرية: العازمي', nameEn: 'HR Manager: Al-Azmi', email: 'hr_mgr', password: '123', role: 'hr_manager', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0 },
-    { id: '3', nameAr: 'سارة الأحمد (موظف HR)', nameEn: 'Sara Al-Ahmad (HR Staff)', email: 'sara', password: '123', role: 'hr_employee', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0 },
-    { id: '4', nameAr: 'فهد صالح', nameEn: 'Fahad Saleh', email: 'fahad', password: '123', role: 'dept_manager', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 0 },
-    { id: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', email: 'fatima', password: '123', role: 'employee', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 5 },
-    { id: '6', nameAr: 'الرئيس التنفيذي (CEO)', nameEn: 'Chief Executive Officer', email: 'ceo', password: '123', role: 'ceo', departmentAr: 'الإدارة العليا', departmentEn: 'Executive Management', baseInitialBalance: 0, usedBalance: 0 }
+    { id: '1', nameAr: 'مدير النظام (الأدمن)', nameEn: 'System Administrator', email: 'admin', password: 'admin', role: 'admin', departmentAr: 'إدارة النظام', departmentEn: 'System Admin', baseInitialBalance: 0, usedBalance: 0, approvalPath: [] },
+    { id: '2', nameAr: 'مدير الموارد البشرية: العازمي', nameEn: 'HR Manager: Al-Azmi', email: 'hr_mgr', password: '123', role: 'hr_manager', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0, approvalPath: ['ceo'] },
+    { id: '3', nameAr: 'سارة الأحمد (موظف HR)', nameEn: 'Sara Al-Ahmad (HR Staff)', email: 'sara', password: '123', role: 'hr_employee', departmentAr: 'الموارد البشرية', departmentEn: 'Human Resources', baseInitialBalance: 30, usedBalance: 0, approvalPath: [] },
+    { id: '4', nameAr: 'فهد صالح', nameEn: 'Fahad Saleh', email: 'fahad', password: '123', role: 'dept_manager', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 0, approvalPath: [] },
+    { id: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', email: 'fatima', password: '123', role: 'employee', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', baseInitialBalance: 30, usedBalance: 5, approvalPath: ['dept_manager','hr_employee','hr_manager'] },
+    { id: '6', nameAr: 'الرئيس التنفيذي (CEO)', nameEn: 'Chief Executive Officer', email: 'ceo', password: '123', role: 'ceo', departmentAr: 'الإدارة العليا', departmentEn: 'Executive Management', baseInitialBalance: 0, usedBalance: 0, approvalPath: [] },
+    { id: '7', nameAr: 'مدير الشؤون الإدارية', nameEn: 'Admin Affairs Manager', email: 'admin_mgr', password: '123', role: 'admin_affairs_manager', departmentAr: 'الشؤون الإدارية', departmentEn: 'Administrative Affairs', baseInitialBalance: 30, usedBalance: 0, approvalPath: ['ceo'] },
+    { id: '8', nameAr: 'مدير المالية', nameEn: 'Finance Manager', email: 'finance_mgr', password: '123', role: 'finance_manager', departmentAr: 'المالية', departmentEn: 'Finance', baseInitialBalance: 30, usedBalance: 0, approvalPath: ['ceo'] }
 ];
 
 let leaves = [
-    { id: 1, employeeId: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', typeAr: 'إجازة سنوية', typeEn: 'Annual Leave', days: 16, reasonAr: 'إجازة سنوية مطولة', reasonEn: 'Extended Annual Leave', finalStatusAr: 'تمت الموافقة النهائية والاعتماد', finalStatusEn: 'Approved & Documented', isManagerOwnRequest: false, rejectReasonAr: '', rejectReasonEn: '', date: '2026-05-19' }
+    { id: 1, employeeId: '5', nameAr: 'فاطمة العتيبي', nameEn: 'Fatima Al-Otaibi', departmentAr: 'الهندسة والتطوير', departmentEn: 'Engineering & Development', typeAr: 'إجازة سنوية', typeEn: 'Annual Leave', days: 16, reasonAr: 'إجازة سنوية مطولة', reasonEn: 'Extended Annual Leave', finalStatusAr: 'تمت الموافقة النهائية والاعتماد', finalStatusEn: 'Approved & Documented', isManagerOwnRequest: false, rejectReasonAr: '', rejectReasonEn: '', date: '2026-05-19', currentStep: 0, approvalPath: ['dept_manager','hr_employee','hr_manager'] }
 ];
+
+let notifications = [];
 
 const translations = {
     ar: {
@@ -71,6 +77,8 @@ const translations = {
         role_hr: 'موظف في قسم (HR)',
         role_hr_manager: 'مدير الموارد البشرية (صاحب الاعتماد النهائي)',
         role_ceo: 'الرئيس التنفيذي (CEO)',
+        role_admin_affairs: 'مدير الشؤون الإدارية',
+        role_finance: 'مدير المالية',
         add_btn: '+ اعتماد الموظف الجديد فوراً',
         dept_title: 'إدارة الأقسام والجهات داخل المنظومة',
         add_dept_title: '+ إضافة قسم / منشأة جديدة',
@@ -110,7 +118,15 @@ const translations = {
         workflow_title: 'مسار الموافقات (التسلسل الهرمي)',
         workflow_desc: 'الموظف → المدير المباشر → موظف HR → مدير HR → CEO',
         ceo_view: 'عرض CEO للنظام',
-        all_leaves: 'جميع طلبات الإجازات في النظام'
+        all_leaves: 'جميع طلبات الإجازات في النظام',
+        new_request_alert: '🔔 طلب إجازة جديد!',
+        approval_path_label: 'مسار الموافقات (يفصل بفاصلة):',
+        approval_path_hint: 'مثال: dept_manager,hr_employee,hr_manager أو ceo',
+        dept_input_label: 'القسم (يدوي):',
+        role_input_label: 'الصلاحية (يدوي):',
+        notifications_title: 'التنبيهات والإشعارات',
+        mark_read: 'تحديد كمقروء',
+        no_notifications: 'لا توجد تنبيهات جديدة'
     },
     en: {
         title: 'Integrated HR Management System',
@@ -155,6 +171,8 @@ const translations = {
         role_hr: 'HR Department Staff',
         role_hr_manager: 'HR Manager (Final Approver)',
         role_ceo: 'Chief Executive Officer (CEO)',
+        role_admin_affairs: 'Admin Affairs Manager',
+        role_finance: 'Finance Manager',
         add_btn: '+ Approve New Employee Immediately',
         dept_title: 'Manage Departments & Entities',
         add_dept_title: '+ Add New Department',
@@ -194,7 +212,15 @@ const translations = {
         workflow_title: 'Approval Workflow (Hierarchical)',
         workflow_desc: 'Employee → Direct Manager → HR Staff → HR Manager → CEO',
         ceo_view: 'CEO System View',
-        all_leaves: 'All Leave Requests in System'
+        all_leaves: 'All Leave Requests in System',
+        new_request_alert: '🔔 New Leave Request!',
+        approval_path_label: 'Approval Path (comma separated):',
+        approval_path_hint: 'Example: dept_manager,hr_employee,hr_manager or ceo',
+        dept_input_label: 'Department (Manual):',
+        role_input_label: 'Role (Manual):',
+        notifications_title: 'Notifications & Alerts',
+        mark_read: 'Mark as Read',
+        no_notifications: 'No new notifications'
     }
 };
 
@@ -205,6 +231,13 @@ const leaveTypesMap = {
     'إجازة حج': { ar: 'إجازة حج', en: 'Hajj Leave' },
     'إجازة أمومة': { ar: 'إجازة أمومة', en: 'Maternity Leave' },
     'إجازة أبوة': { ar: 'إجازة أبوة', en: 'Paternity Leave' }
+};
+
+const WORKFLOW_STEPS = {
+    'dept_manager': { ar: 'قيد الانتظار - موافقة المدير المباشر', en: 'Pending - Direct Manager Approval', next: 'hr_employee', action: 'تمرير للـ HR' },
+    'hr_employee': { ar: 'قيد الانتظار - مراجعة موظف HR', en: 'Pending - HR Review', next: 'hr_manager', action: 'تمرير لمدير الموارد البشرية' },
+    'hr_manager': { ar: 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية', en: 'Pending - HR Manager Final Approval', next: null, action: 'اعتماد نهائي وخصم للأرصدة' },
+    'ceo': { ar: 'قيد الانتظار - موافقة الرئيس التنفيذي', en: 'Pending - CEO Approval', next: null, action: 'اعتماد نهائي وخصم للأرصدة' }
 };
 
 function calculateUserBalances(user) {
@@ -218,14 +251,33 @@ function calculateUserBalances(user) {
     return { initial: totalInitial.toFixed(1), used: user.usedBalance, balance: currentBalance.toFixed(1) };
 }
 
+function getUnreadNotifications(userId) {
+    return notifications.filter(n => n.toUserId === userId && !n.read);
+}
+
+function addNotification(toUserId, messageAr, messageEn, leaveId) {
+    notifications.push({
+        id: notifications.length + 1,
+        toUserId: toUserId,
+        messageAr: messageAr,
+        messageEn: messageEn,
+        leaveId: leaveId,
+        read: false,
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString('ar-EG')
+    });
+}
+
 function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
     let pendingCount = leaves.filter(l => l.finalStatusAr.includes('قيد الانتظار')).length;
+    let unreadCount = getUnreadNotifications(user.id).length;
     let t = translations[lang];
     let isRtl = lang === 'ar';
-    
+
     let showAdminTabs = user.role === 'admin';
     let showCEOTab = user.role === 'ceo';
-    
+    let showReports = user.role === 'admin' || user.role === 'hr_manager';
+
     return `
     <!DOCTYPE html>
     <html lang="${lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
@@ -242,12 +294,16 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
             .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #1abc9c; color: white; }
             .main-content { margin-${isRtl ? 'right' : 'left'}: 280px; padding: 25px; width: calc(100% - 280px); }
             .card-custom { border-radius: 8px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: white; margin-bottom: 20px; }
-            .workflow-step { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+            .workflow-step { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: center; }
             .workflow-step.active { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
             .copy-btn { cursor: pointer; transition: all 0.3s; }
             .copy-btn:hover { transform: scale(1.05); }
+            .notification-badge { position: relative; }
+            .notification-badge::after { content: '${unreadCount}'; position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; }
+            .notification-item { border-left: 3px solid #1abc9c; padding: 10px; margin-bottom: 8px; background: #f8f9fa; border-radius: 5px; }
+            .notification-item.unread { border-left-color: #ff4757; background: #fff5f5; }
             @media (max-width: 768px) { .sidebar { width: 100%; min-height: auto; position: relative; } .main-content { margin: 0; width: 100%; } .d-flex { flex-direction: column; } }
-            @media print { .sidebar, .btn, .no-print, form, .alert, .card-custom-header, select, input, .input-group { display: none !important; } .main-content { margin: 0 !important; width: 100% !important; padding: 0; } .print-section { display: block !important; border: none !important; } }
+            @media print { .sidebar, .btn, .no-print, form, .alert, .card-custom-header, select, input, .input-group, .notification-panel { display: none !important; } .main-content { margin: 0 !important; width: 100% !important; padding: 0; } .print-section { display: block !important; border: none !important; } }
         </style>
     </head>
     <body>
@@ -259,9 +315,12 @@ function generateLayout(user, currentTab, contentHtml, lang = 'ar') {
                 <ul class="nav flex-column flex-grow-1">
                     <li class="nav-item"><a href="/" class="nav-link ${currentTab==='dashboard'?'active':''}"><span><i class="bi bi-grid-1x2-fill me-2"></i> ${t.dashboard}</span></a></li>
                     <li class="nav-item"><a href="/leaves" class="nav-link ${currentTab==='leaves'?'active':''}"><span><i class="bi bi-calendar-check-fill me-2"></i> ${t.leaves}</span> <span class="badge bg-danger">${pendingCount}</span></a></li>
+                    <li class="nav-item"><a href="/notifications" class="nav-link ${currentTab==='notifications'?'active':''} ${unreadCount > 0 ? 'notification-badge' : ''}"><span><i class="bi bi-bell-fill me-2"></i> ${t.notifications_title}</span> ${unreadCount > 0 ? `<span class="badge bg-danger">${unreadCount}</span>` : ''}</a></li>
                     ${showAdminTabs ? `
                         <li class="nav-item"><a href="/departments" class="nav-link ${currentTab==='departments'?'active':''}"><span><i class="bi bi-building me-2"></i> ${t.manage_depts}</span></a></li>
                         <li class="nav-item"><a href="/add-employee" class="nav-link ${currentTab==='add-employee'?'active':''}"><span><i class="bi bi-person-plus-fill me-2"></i> ${t.add_employee}</span></a></li>
+                    ` : ''}
+                    ${showReports ? `
                         <li class="nav-item"><a href="/reports" class="nav-link ${currentTab==='reports'?'active':''}"><span><i class="bi bi-printer-fill me-2"></i> ${t.reports}</span></a></li>
                     ` : ''}
                     ${showCEOTab ? `
@@ -297,6 +356,7 @@ app.get('/toggle-lang', (req, res) => {
     if (dest === 'leaves') return res.redirect('/leaves');
     if (dest === 'reports') return res.redirect('/reports');
     if (dest === 'ceo-dashboard') return res.redirect('/ceo-dashboard');
+    if (dest === 'notifications') return res.redirect('/notifications');
     res.redirect('/');
 });
 
@@ -334,9 +394,9 @@ app.get('/', (req, res) => {
     const t = translations[lang];
     const u = users.find(usr => usr.id === req.session.user.id) || req.session.user;
     const balances = calculateUserBalances(u);
-    
+
     let html = '';
-    
+
     html += `
     <div class="card card-custom p-4 mb-4">
         <h5 class="fw-bold text-dark mb-3"><i class="bi bi-diagram-3-fill text-primary"></i> ${t.workflow_title}</h5>
@@ -349,7 +409,7 @@ app.get('/', (req, res) => {
         </div>
         <p class="text-muted small mt-2 mb-0"><i class="bi bi-info-circle"></i> ${t.workflow_desc}</p>
     </div>`;
-    
+
     if (u.role !== 'admin' && u.role !== 'ceo') {
         html += `
         <div class="card card-custom p-4">
@@ -361,7 +421,7 @@ app.get('/', (req, res) => {
             </div>
         </div>`;
     } else {
-        html += `<div class="alert alert-info fw-bold text-center"><i class="bi bi-info-circle-fill"></i> ${lang === 'ar' ? 'أنت داخل الآن بحساب "' + (u.role === 'ceo' ? 'الرئيس التنفيذي (CEO)' : 'مدير النظام (الأدمن)') + '"؛ يمكنك التحكم الكامل وإصدار التقارير للموظفين والمسؤولين أدناه.' : 'You are logged in as "' + (u.role === 'ceo' ? 'Chief Executive Officer' : 'System Administrator') + '".'}</div>`;
+        html += `<div class="alert alert-info fw-bold text-center"><i class="bi bi-info-circle-fill"></i> ${lang === 'ar' ? 'أنت داخل الآن بحساب "' + (u.role === 'ceo' ? 'الرئيس التنفيذي (CEO)' : 'مدير النظام (الأدمن)') + '"؛ يمكنك التحكم الكامل وإصدار التقارير للموظفين والمسؤولين أدناه.' : 'You are logged in as "' + (u.role === 'ceo' ? 'Chief Executive Officer' : 'System Administrator') + '".}</div>`;
     }
 
     if (u.role === 'admin') {
@@ -382,7 +442,7 @@ app.get('/', (req, res) => {
             <div class="table-responsive">
                 <table class="table table-bordered text-center align-middle">
                     <thead class="table-light">
-                        <tr><th>${t.th_name}</th><th>${t.th_dept}</th><th>${t.th_role}</th><th>${t.th_user}</th><th>${t.th_pass}</th><th>${t.th_bal}</th><th>${t.th_actions}</th></tr>
+                        <tr><th>${t.th_name}</th><th>${t.th_dept}</th><th>${t.th_role}</th><th>${t.th_user}</th><th>${t.th_pass}</th><th>${t.th_bal}</th><th>مسار الموافقات</th><th>${t.th_actions}</th></tr>
                     </thead>
                     <tbody>
                         ${users.map(userItem => {
@@ -393,6 +453,9 @@ app.get('/', (req, res) => {
                             if(userItem.role==='hr_employee') roleText = t.role_hr;
                             if(userItem.role==='dept_manager') roleText = t.role_manager;
                             if(userItem.role==='ceo') roleText = t.role_ceo;
+                            if(userItem.role==='admin_affairs_manager') roleText = t.role_admin_affairs;
+                            if(userItem.role==='finance_manager') roleText = t.role_finance;
+                            const pathStr = userItem.approvalPath && userItem.approvalPath.length > 0 ? userItem.approvalPath.join(' → ') : '-';
                             return `
                             <tr>
                                 <td><b>${lang==='ar'? userItem.nameAr : userItem.nameEn}</b></td>
@@ -411,6 +474,7 @@ app.get('/', (req, res) => {
                                     </div>
                                 </td>
                                 <td><b class="text-success">${userItem.role==='admin' || userItem.role==='ceo' ? '-' : b.balance}</b></td>
+                                <td><small class="text-muted">${pathStr}</small></td>
                                 <td>
                                     ${userItem.role==='admin' ? '-' : `
                                         <div class="btn-group btn-group-sm">
@@ -425,7 +489,7 @@ app.get('/', (req, res) => {
                 </table>
             </div>
         </div>
-        
+
         <script>
             function copyToClipboard(elementId) {
                 const copyText = document.getElementById(elementId);
@@ -443,6 +507,43 @@ app.get('/', (req, res) => {
         </script>`;
     }
     res.send(generateLayout(u, 'dashboard', html, lang));
+});
+
+app.get('/notifications', (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    const lang = req.session.lang || 'ar';
+    const t = translations[lang];
+    const user = users.find(u => u.id === req.session.user.id) || req.session.user;
+
+    const userNotifications = notifications.filter(n => n.toUserId === user.id).sort((a,b) => b.id - a.id);
+
+    let html = `
+    <div class="card card-custom p-4">
+        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-bell-fill text-primary"></i> ${t.notifications_title}</h5>
+        ${userNotifications.length === 0 ? `<div class="alert alert-info">${t.no_notifications}</div>` : ''}
+        ${userNotifications.map(n => `
+            <div class="notification-item ${!n.read ? 'unread' : ''}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="mb-1 fw-bold ${!n.read ? 'text-danger' : ''}">${lang==='ar' ? n.messageAr : n.messageEn}</p>
+                        <small class="text-muted">${n.date} ${n.time}</small>
+                    </div>
+                    ${!n.read ? `<a href="/mark-read/${n.id}" class="btn btn-sm btn-outline-success">${t.mark_read}</a>` : '<span class="badge bg-secondary">مقروء</span>'}
+                </div>
+            </div>
+        `).join('')}
+    </div>`;
+
+    res.send(generateLayout(user, 'notifications', html, lang));
+});
+
+app.get('/mark-read/:id', (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    const notif = notifications.find(n => n.id == req.params.id);
+    if (notif && notif.toUserId === req.session.user.id) {
+        notif.read = true;
+    }
+    res.redirect('/notifications');
 });
 
 app.get('/departments', (req, res) => {
@@ -496,20 +597,18 @@ app.get('/add-employee', (req, res) => {
             <div class="col-md-6"><label class="form-label small fw-bold">${t.placeholder_name_ar}</label><input type="text" name="newNameAr" class="form-control" required></div>
             <div class="col-md-6"><label class="form-label small fw-bold">${t.placeholder_name_en}</label><input type="text" name="newNameEn" class="form-control" required></div>
             <div class="col-md-6">
-                <label class="form-label small fw-bold">${t.th_dept}</label>
-                <select name="userDeptIndex" class="form-select" required>
-                    ${departments.map((d, idx) => `<option value="${idx}">${lang==='ar'? d.ar : d.en}</option>`).join('')}
-                </select>
+                <label class="form-label small fw-bold">${t.dept_input_label}</label>
+                <input type="text" name="userDeptAr" class="form-control" placeholder="القسم بالعربي" required>
+                <input type="text" name="userDeptEn" class="form-control mt-2" placeholder="Department in English" required>
             </div>
             <div class="col-md-6">
-                <label class="form-label small fw-bold">${t.th_role}</label>
-                <select name="userRole" class="form-select" required>
-                    <option value="employee">${t.role_employee}</option>
-                    <option value="dept_manager">${t.role_manager}</option>
-                    <option value="hr_employee">${t.role_hr}</option>
-                    <option value="hr_manager">${t.role_hr_manager}</option>
-                    <option value="ceo">${t.role_ceo}</option>
-                </select>
+                <label class="form-label small fw-bold">${t.role_input_label}</label>
+                <input type="text" name="userRole" class="form-control" placeholder="مثال: employee, dept_manager, hr_employee, hr_manager, ceo, admin_affairs_manager, finance_manager" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label small fw-bold">${t.approval_path_label}</label>
+                <input type="text" name="approvalPath" class="form-control" placeholder="${t.approval_path_hint}" required>
+                <small class="text-muted">${t.approval_path_hint}</small>
             </div>
             <div class="col-md-6"><label class="form-label small fw-bold">${t.th_user}</label><input type="text" name="newEmail" class="form-control" required></div>
             <div class="col-md-6"><label class="form-label small fw-bold">${t.th_pass}</label><input type="text" name="newPassword" class="form-control" required></div>
@@ -524,16 +623,30 @@ app.get('/leaves', (req, res) => {
     const lang = req.session.lang || 'ar';
     const t = translations[lang];
     const user = users.find(u => u.id === req.session.user.id) || req.session.user;
-    
+
     let visibleLeaves = leaves;
     if (user.role === 'employee') {
         visibleLeaves = leaves.filter(l => l.employeeId === user.id);
     } else if (user.role === 'dept_manager') {
-        visibleLeaves = leaves.filter(l => l.departmentAr === user.departmentAr || l.employeeId === user.id);
-    } else if (user.role === 'hr_employee' || user.role === 'hr_manager') {
-        visibleLeaves = leaves;
+        visibleLeaves = leaves.filter(l => {
+            const leaveUser = users.find(u => u.id === l.employeeId);
+            return (leaveUser && leaveUser.approvalPath && leaveUser.approvalPath.includes('dept_manager') && l.departmentAr === user.departmentAr) || l.employeeId === user.id;
+        });
+    } else if (user.role === 'hr_employee') {
+        visibleLeaves = leaves.filter(l => {
+            const leaveUser = users.find(u => u.id === l.employeeId);
+            return leaveUser && leaveUser.approvalPath && leaveUser.approvalPath.includes('hr_employee');
+        });
+    } else if (user.role === 'hr_manager') {
+        visibleLeaves = leaves.filter(l => {
+            const leaveUser = users.find(u => u.id === l.employeeId);
+            return leaveUser && leaveUser.approvalPath && leaveUser.approvalPath.includes('hr_manager');
+        });
     } else if (user.role === 'ceo') {
-        visibleLeaves = leaves;
+        visibleLeaves = leaves.filter(l => {
+            const leaveUser = users.find(u => u.id === l.employeeId);
+            return leaveUser && leaveUser.approvalPath && leaveUser.approvalPath.includes('ceo');
+        });
     }
 
     let html = `
@@ -556,15 +669,21 @@ app.get('/leaves', (req, res) => {
                 <tbody>
                     ${visibleLeaves.map(l => {
                         let actionsHtml = `<span class="text-muted small">${t.no_actions}</span>`;
-                        
-                        if (user.role === 'dept_manager' && l.finalStatusAr === 'قيد الانتظار - موافقة المدير المباشر' && l.departmentAr === user.departmentAr && !l.isManagerOwnRequest) {
+                        const leaveUser = users.find(u => u.id === l.employeeId);
+                        const path = l.approvalPath || (leaveUser ? leaveUser.approvalPath : []);
+                        const currentStepRole = path && path[l.currentStep] ? path[l.currentStep] : null;
+
+                        if (currentStepRole === 'dept_manager' && user.role === 'dept_manager' && l.departmentAr === user.departmentAr && !l.isManagerOwnRequest) {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-success fw-bold p-1">${t.approve_step_1}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
-                        if (user.role === 'hr_employee' && l.finalStatusAr === 'قيد الانتظار - مراجعة موظف HR') {
+                        if (currentStepRole === 'hr_employee' && user.role === 'hr_employee') {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-info text-white fw-bold p-1">${t.approve_step_2}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
-                        if (user.role === 'hr_manager' && l.finalStatusAr === 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية') {
+                        if (currentStepRole === 'hr_manager' && user.role === 'hr_manager') {
                             actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-success fw-bold p-1">${t.approve_step_3}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
+                        }
+                        if (currentStepRole === 'ceo' && user.role === 'ceo') {
+                            actionsHtml = `<a href="/action/approve-step/${l.id}" class="btn btn-sm btn-dark fw-bold p-1">✓ ${lang==='ar'?'اعتماد CEO':'CEO Approve'}</a> <button onclick="triggerReject(${l.id})" class="btn btn-sm btn-danger fw-bold p-1">${t.reject_btn}</button>`;
                         }
 
                         return `
@@ -613,18 +732,20 @@ app.post('/request-leave', (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     const user = users.find(u => u.id === req.session.user.id) || req.session.user;
     const typeKey = req.body.typeKey;
-    
-    let initialStatusAr = 'قيد الانتظار - موافقة المدير المباشر';
-    let initialStatusEn = 'Pending - Direct Manager Approval';
+
+    const path = user.approvalPath || ['dept_manager','hr_employee','hr_manager'];
+    const firstStep = path[0];
+    const stepConfig = WORKFLOW_STEPS[firstStep];
+
+    let initialStatusAr = stepConfig ? stepConfig.ar : 'قيد الانتظار';
+    let initialStatusEn = stepConfig ? stepConfig.en : 'Pending';
     let isManagerOwn = false;
 
-    if (user.role === 'dept_manager' || user.role === 'hr_manager' || user.role === 'ceo') {
-        initialStatusAr = 'قيد الانتظار - مراجعة موظف HR';
-        initialStatusEn = 'Pending - HR Review';
+    if (user.role === 'dept_manager' || user.role === 'hr_manager' || user.role === 'ceo' || user.role === 'admin_affairs_manager' || user.role === 'finance_manager') {
         isManagerOwn = true;
     }
 
-    leaves.push({
+    const newLeave = {
         id: leaves.length + 1,
         employeeId: user.id,
         nameAr: user.nameAr,
@@ -641,8 +762,23 @@ app.post('/request-leave', (req, res) => {
         isManagerOwnRequest: isManagerOwn,
         rejectReasonAr: '',
         rejectReasonEn: '',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        currentStep: 0,
+        approvalPath: path
+    };
+
+    leaves.push(newLeave);
+
+    // Send notification to first approver
+    const approvers = users.filter(u => u.role === firstStep);
+    approvers.forEach(approver => {
+        addNotification(approver.id, 
+            `طلب إجازة جديد من ${user.nameAr} (${newLeave.days} أيام)`,
+            `New leave request from ${user.nameEn} (${newLeave.days} days)`,
+            newLeave.id
+        );
     });
+
     res.redirect('/leaves');
 });
 
@@ -650,17 +786,39 @@ app.get('/action/approve-step/:id', (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     const leave = leaves.find(l => l.id == req.params.id);
     if (leave) {
-        if (leave.finalStatusAr === 'قيد الانتظار - موافقة المدير المباشر') {
-            leave.finalStatusAr = 'قيد الانتظار - مراجعة موظف HR';
-            leave.finalStatusEn = 'Pending - HR Review';
-        } else if (leave.finalStatusAr === 'قيد الانتظار - مراجعة موظف HR') {
-            leave.finalStatusAr = 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية';
-            leave.finalStatusEn = 'Pending - HR Manager Final Approval';
-        } else if (leave.finalStatusAr === 'قيد الانتظار - الاعتماد النهائي من مدير الموارد البشرية') {
+        const path = leave.approvalPath || [];
+        const currentStepRole = path[leave.currentStep];
+        const nextStepRole = path[leave.currentStep + 1];
+
+        if (nextStepRole) {
+            leave.currentStep++;
+            const nextConfig = WORKFLOW_STEPS[nextStepRole];
+            if (nextConfig) {
+                leave.finalStatusAr = nextConfig.ar;
+                leave.finalStatusEn = nextConfig.en;
+            }
+
+            // Notify next approver
+            const nextApprovers = users.filter(u => u.role === nextStepRole);
+            nextApprovers.forEach(approver => {
+                addNotification(approver.id,
+                    `طلب إجازة بانتظار موافقتك من ${leave.nameAr}`,
+                    `Leave request pending your approval from ${leave.nameEn}`,
+                    leave.id
+                );
+            });
+        } else {
             leave.finalStatusAr = 'تمت الموافقة النهائية والاعتماد';
             leave.finalStatusEn = 'Approved & Documented';
             const u = users.find(usr => usr.id === leave.employeeId);
             if (u && leave.typeAr === 'إجازة سنوية') u.usedBalance += leave.days;
+
+            // Notify employee
+            addNotification(leave.employeeId,
+                `تمت الموافقة على طلب إجازتك (${leave.days} أيام)`,
+                `Your leave request has been approved (${leave.days} days)`,
+                leave.id
+            );
         }
     }
     res.redirect('/leaves');
@@ -675,12 +833,19 @@ app.get('/action/reject-step/:id', (req, res) => {
         leave.finalStatusEn = 'Rejected Completely';
         leave.rejectReasonAr = reason;
         leave.rejectReasonEn = reason;
+
+        // Notify employee
+        addNotification(leave.employeeId,
+            `تم رفض طلب إجازتك - السبب: ${reason}`,
+            `Your leave request was rejected - Reason: ${reason}`,
+            leave.id
+        );
     }
     res.redirect('/leaves');
 });
 
 app.get('/reports', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
+    if (!req.session.user || (req.session.user.role !== 'admin' && req.session.user.role !== 'hr_manager')) return res.redirect('/login');
     const lang = req.session.lang || 'ar';
     const t = translations[lang];
     const selectedUserId = req.query.userId;
@@ -691,14 +856,14 @@ app.get('/reports', (req, res) => {
         if (selectedUser) {
             const b = calculateUserBalances(selectedUser);
             const approvedLeaves = leaves.filter(l => l.employeeId === selectedUser.id && l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد');
-            
+
             reportHtml = `
             <div class="mt-4 p-4 border border-dark rounded bg-white print-section">
                 <div class="text-center mb-4">
                     <h3 class="fw-bold">${t.report_title_print}</h3>
                     <p class="text-muted small">${t.report_head}</p>
                 </div>
-                
+
                 <div class="row g-3 mb-4 p-3 bg-light rounded border text-start">
                     <div class="col-md-6"><b>${t.th_name}:</b> ${lang==='ar'? selectedUser.nameAr : selectedUser.nameEn}</div>
                     <div class="col-md-6"><b>${t.th_dept}:</b> ${lang==='ar'? selectedUser.departmentAr : selectedUser.departmentEn}</div>
@@ -724,7 +889,7 @@ app.get('/reports', (req, res) => {
                             approvedLeaves.map(l => {
                                 const dateObj = new Date(l.date);
                                 const formattedDate = lang==='ar' ? dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) : dateObj.toLocaleDateString('en-US');
-                                
+
                                 let salaryCalculatorHtml = '';
                                 if (l.days >= 15) {
                                     salaryCalculatorHtml = `
@@ -737,7 +902,7 @@ app.get('/reports', (req, res) => {
                                             <div class="col-6"><input type="number" id="food-${l.id}" placeholder="${t.ph_food}" class="form-control form-control-sm" oninput="calculateDetailedLeaveSalary(${l.id}, ${l.days})"></div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="p-2 border rounded bg-light text-start text-dark shadow-sm">
                                         <div class="small border-bottom pb-1 mb-1 fw-bold text-secondary">${t.calc_detail_title} (${l.days} ${lang==='ar'?'يوم':'Days'}):</div>
                                         <div class="d-flex justify-content-between small"><span>${t.lbl_calc_base}</span> <span><b id="lbl-base-${l.id}">0.00</b> ${lang==='ar'?'ريال':'SAR'}</span></div>
@@ -772,13 +937,13 @@ app.get('/reports', (req, res) => {
                         let housing = parseFloat(document.getElementById('housing-' + id).value) || 0;
                         let trans = parseFloat(document.getElementById('trans-' + id).value) || 0;
                         let food = parseFloat(document.getElementById('food-' + id).value) || 0;
-                        
+
                         let leafBase = (base / 30) * days;
                         let leafHousing = (housing / 30) * days;
                         let leafTrans = (trans / 30) * days;
                         let leafFood = (food / 30) * days;
                         let totalLeaveSalary = leafBase + leafHousing + leafTrans + leafFood;
-                        
+
                         document.getElementById('lbl-base-' + id).innerText = leafBase.toFixed(2);
                         document.getElementById('lbl-housing-' + id).innerText = leafHousing.toFixed(2);
                         document.getElementById('lbl-trans-' + id).innerText = leafTrans.toFixed(2);
@@ -812,24 +977,24 @@ app.get('/ceo-dashboard', (req, res) => {
     if (!req.session.user || req.session.user.role !== 'ceo') return res.redirect('/login');
     const lang = req.session.lang || 'ar';
     const t = translations[lang];
-    
+
     const totalEmployees = users.filter(u => u.role !== 'admin').length;
     const totalLeaves = leaves.length;
     const pendingLeaves = leaves.filter(l => l.finalStatusAr.includes('قيد الانتظار')).length;
     const approvedLeaves = leaves.filter(l => l.finalStatusAr === 'تمت الموافقة النهائية والاعتماد').length;
     const rejectedLeaves = leaves.filter(l => l.finalStatusAr === 'مرفوض كلياً').length;
-    
+
     let html = `
     <div class="card card-custom p-4">
         <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-briefcase-fill text-primary"></i> ${t.ceo_view}</h5>
-        
+
         <div class="row g-3 mb-4">
             <div class="col-md-3"><div class="p-3 border rounded bg-info text-white text-center"><h6>${lang === 'ar' ? 'إجمالي الموظفين' : 'Total Employees'}</h6><h3 class="fw-bold">${totalEmployees}</h3></div></div>
             <div class="col-md-3"><div class="p-3 border rounded bg-warning text-dark text-center"><h6>${lang === 'ar' ? 'الطلبات المعلقة' : 'Pending Requests'}</h6><h3 class="fw-bold">${pendingLeaves}</h3></div></div>
             <div class="col-md-3"><div class="p-3 border rounded bg-success text-white text-center"><h6>${lang === 'ar' ? 'الطلبات المعتمدة' : 'Approved Requests'}</h6><h3 class="fw-bold">${approvedLeaves}</h3></div></div>
             <div class="col-md-3"><div class="p-3 border rounded bg-danger text-white text-center"><h6>${lang === 'ar' ? 'الطلبات المرفوضة' : 'Rejected Requests'}</h6><h3 class="fw-bold">${rejectedLeaves}</h3></div></div>
         </div>
-        
+
         <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-list-check"></i> ${t.all_leaves}</h6>
         <div class="table-responsive">
             <table class="table table-bordered align-middle text-center">
@@ -858,7 +1023,7 @@ app.get('/ceo-dashboard', (req, res) => {
             </table>
         </div>
     </div>`;
-    
+
     res.send(generateLayout(req.session.user, 'ceo-dashboard', html, lang));
 });
 
@@ -887,8 +1052,10 @@ app.get('/update-balance/:id', (req, res) => {
 
 app.post('/add-user', (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/login');
-    const { newNameAr, newNameEn, newEmail, newPassword, userDeptIndex, userRole } = req.body;
-    const deptObj = departments[parseInt(userDeptIndex)];
+    const { newNameAr, newNameEn, newEmail, newPassword, userDeptAr, userDeptEn, userRole, approvalPath } = req.body;
+
+    const pathArray = approvalPath ? approvalPath.split(',').map(s => s.trim()).filter(s => s) : ['dept_manager','hr_employee','hr_manager'];
+
     users.push({
         id: (users.length + 1).toString(),
         nameAr: newNameAr,
@@ -896,10 +1063,11 @@ app.post('/add-user', (req, res) => {
         email: newEmail,
         password: newPassword,
         role: userRole,
-        departmentAr: deptObj.ar,
-        departmentEn: deptObj.en,
+        departmentAr: userDeptAr,
+        departmentEn: userDeptEn,
         baseInitialBalance: 30,
-        usedBalance: 0
+        usedBalance: 0,
+        approvalPath: pathArray
     });
     res.redirect('/');
 });
